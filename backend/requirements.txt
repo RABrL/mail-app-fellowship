@@ -1,0 +1,6 @@
+pip~=23.3.2
+wheel~=0.42.0
+setuptools~=69.0.3
+Django~=4.2.10
+asgiref~=3.7.2
+sqlparse~=0.4.4
