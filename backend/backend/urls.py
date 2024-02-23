@@ -16,7 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from mailapp.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('mails/<str:user_mail>/', MailsFromUserGetterEndpoint.as_view()),
 ]
