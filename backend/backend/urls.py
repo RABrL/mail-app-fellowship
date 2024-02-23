@@ -21,4 +21,5 @@ from mailapp.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('mails/<str:user_mail>/', MailsFromUserGetterEndpoint.as_view()),
+    path('mail/<str:mail_id>/', InformationForMailGetterEndpoint.as_view()),
 ]
