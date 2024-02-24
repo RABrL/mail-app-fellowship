@@ -198,7 +198,7 @@ class InformationForMailGetterEndpoint(APIView):
         # Return the JSON response
         return JsonResponse(response)
     
-class MailSenderEndpoint(APIView):
+class SendMailPostEndpoint(APIView):
     def post(self, request):
         ENDPOINT = "mailapp-database-instance.c1woi26qsnpj.us-east-1.rds.amazonaws.com"
         DATABASE_ID = "mailapp-database-instance"
