@@ -27,8 +27,7 @@ export function InboxContainer(props: InboxContainerProps): ReactElement {
   }, [])
   const [choosed, setChoosed] = useState<number>(0)
   return (
-     <section className="w-1/4 min-w-96 overflow-y-scroll">
-
+    <section className="w-1/4 min-w-96 overflow-y-scroll">
       {emails.map(( email, index ) => (
             <InboxCard key={email.id} {...email} choosed={choosed} setChoosed={setChoosed}/>
           ))}

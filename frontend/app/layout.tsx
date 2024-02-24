@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <main className="flex min-h-screen   ">
+        <main className="flex max-h-screen">
           <FoldersSection/>
           <InboxContainer/>
           {children}
