@@ -104,6 +104,20 @@ class MailsReceivedUserGetterEndpoint(APIView):
     
 class MailsSentUserGetterEndpoint(APIView):
     def get(self, request, user_mail):
+        '''
+        Handle GET requests to get all the mails sent by a user
+
+        :param request: The request object
+        :param user_mail: The email of the user
+
+        :return: A JSON response
+            - If successful:
+                a JSON object with the mail IDs as keys and the mail details as values
+                with HTTP status code 200 (OK).
+            - If unsuccessful:
+                a JSON object with an error message
+                with HTTP status code 500 (Internal Server Error).
+        '''
         response = {}
         connection = get_connection()
         try:
@@ -133,10 +147,24 @@ class MailsSentUserGetterEndpoint(APIView):
             connection.close()
 
         # Return the JSON response
-        return JsonResponse(response)
+        return JsonResponse(response, status=200)
     
 class InformationForMailGetterEndpoint(APIView):
     def get(self, request, mail_id):
+        '''
+        Handle GET requests to get the information for a mail
+
+        :param request: The request object
+        :param mail_id: The ID of the mail
+
+        :return: A JSON response
+            - If successful:
+                a JSON object with the mail details
+                with HTTP status code 200 (OK).
+            - If unsuccessful:
+                a JSON object with an error message
+                with HTTP status code 500 (Internal Server Error).
+        '''
         response = {}
         connection = get_connection()
         try:
@@ -170,10 +198,23 @@ class InformationForMailGetterEndpoint(APIView):
             connection.close()
 
         # Return the JSON response
-        return JsonResponse(response)
+        return JsonResponse(response, status=200)
     
 class SendMailPostEndpoint(APIView):
     def post(self, request):
+        '''
+        Handle POST requests to send a mail
+
+        :param request: The request object
+
+        :return: A JSON response
+            - If successful:
+                a JSON object with a success message
+                with HTTP status code 200 (OK).
+            - If unsuccessful:
+                a JSON object with an error message
+                with HTTP status code 500 (Internal Server Error).
+        '''
         response = {}
         connection = get_connection()
         try:
@@ -204,4 +245,4 @@ class SendMailPostEndpoint(APIView):
             connection.close()
 
         # Return the JSON response
-        return JsonResponse(response)
+        return JsonResponse(response, status=200)
