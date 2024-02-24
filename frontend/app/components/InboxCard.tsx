@@ -3,8 +3,8 @@ import { Email } from "../types/EmailInterface";
 import { tailwindColors } from "../assets/randomColors";
 import Link from "next/link";
 export interface InboxCardProps extends Email {
-  choosed: string;
-  setChoosed: React.Dispatch<React.SetStateAction<string>>;
+  choosed: number;
+  setChoosed: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export function InboxCard(props: InboxCardProps): ReactElement {
@@ -16,13 +16,13 @@ export function InboxCard(props: InboxCardProps): ReactElement {
 
         <div className={` ${cardColor} flex justify-center items-center rounded-full w-14 h-12`}>
         <h2 className=" text-2xl ">
-          {props.remitent.slice(0,1)}
+          {props.sender_email.slice(0,1)}
         </h2>
         </div>
         <div className="w-full  ">
-          <p className="text-right text-xs text-gray-400">29/02/2024</p>
+          <p className="text-right text-xs text-gray-400">{props.sent_date.slice(0,10)}</p>
           <div className=" ml-5">
-            <h3 className="font-semibold leading-tight">{props.remitent}</h3>
+            <h3 className="font-semibold leading-tight">{props.sender_email}</h3>
             <p className="text-gray-300 text-xs leading-tight">{props.subject}</p>
           </div>
         </div>
