@@ -4,22 +4,35 @@ from django.http import JsonResponse
 import boto3
 import psycopg2
 import os
+import threading
+import random
+import string
+import hashlib
+thread_local = threading.local()
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env')
 load_dotenv(dotenv_path)
 
-class MailsReceivedUserGetterEndpoint(APIView):
-    def get(self, request, user_mail):
-        ENDPOINT = "mailapp-database-instance.c1woi26qsnpj.us-east-1.rds.amazonaws.com"
-        DATABASE_ID = "mailapp-database-instance"
-        PORT = 5432
-        USER = "postgres"
-        ACCESS_KEY = os.environ.get("AWS_ACCESS_KEY_ID")
-        SECRET_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
-        PASSWORD = os.environ.get("AWS_DATABASE_PASSWORD")
-        REGION = "us-east-1"
-        DBNAME = "mail_db"
+ENDPOINT = "mailapp-database-instance.c1woi26qsnpj.us-east-1.rds.amazonaws.com"
+DATABASE_ID = "mailapp-database-instance"
+PORT = 5432
+USER = "postgres"
+ACCESS_KEY = os.environ.get("AWS_ACCESS_KEY_ID")
+SECRET_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+PASSWORD = os.environ.get("AWS_DATABASE_PASSWORD")
+REGION = "us-east-1"
+DBNAME = "mail_db"
 
+@staticmethod
+def get_connection():
+    """
+    Get a connection to the RDS PostgreSQL database.
+
+    :return: The connection to the RDS PostgreSQL database.
+    """
+    # Retrieve or create a client for the current thread
+    if not hasattr(thread_local, "connection"):
+        # Set up the boto3 client
         rds_client = boto3.client(
             'rds',
             aws_access_key_id=ACCESS_KEY,
@@ -40,8 +53,29 @@ class MailsReceivedUserGetterEndpoint(APIView):
             port=PORT
         )
 
-        response = {}
+        thread_local.client = rds_client
+        thread_local.connection = connection
+    # Return the client
+    return thread_local.connection
 
+class MailsReceivedUserGetterEndpoint(APIView):
+    def get(self, request, user_mail):
+        '''
+        Handle GET requests to get all the mails received by a user
+
+        :param request: The request object
+        :param user_mail: The email of the user
+
+        :return: A JSON response
+            - If successful:
+                a JSON object with the mail IDs as keys and the mail details as values
+                with HTTP status code 200 (OK).
+            - If unsuccessful:
+                a JSON object with an error message
+                with HTTP status code 500 (Internal Server Error).
+        '''
+        response = {}
+        connection = get_connection()
         try:
             with connection.cursor() as cursor:
                 get_tables_query = f'''
@@ -62,48 +96,33 @@ class MailsReceivedUserGetterEndpoint(APIView):
         except Exception as e:
             # Handle exceptions appropriately
             response = {'error': str(e)}
+            return JsonResponse(response, status=500)
 
         finally:
             # Close the database connection when done
             connection.close()
 
         # Return the JSON response
-        return JsonResponse(response)
+        return JsonResponse(response, status=200)
     
 class MailsSentUserGetterEndpoint(APIView):
     def get(self, request, user_mail):
-        ENDPOINT = "mailapp-database-instance.c1woi26qsnpj.us-east-1.rds.amazonaws.com"
-        DATABASE_ID = "mailapp-database-instance"
-        PORT = 5432
-        USER = "postgres"
-        ACCESS_KEY = os.environ.get("AWS_ACCESS_KEY_ID")
-        SECRET_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
-        PASSWORD = os.environ.get("AWS_DATABASE_PASSWORD")
-        REGION = "us-east-1"
-        DBNAME = "mail_db"
+        '''
+        Handle GET requests to get all the mails sent by a user
 
-        rds_client = boto3.client(
-            'rds',
-            aws_access_key_id=ACCESS_KEY,
-            aws_secret_access_key=SECRET_KEY,
-            region_name=REGION,
-        )
+        :param request: The request object
+        :param user_mail: The email of the user
 
-        # Get the RDS instance details
-        response = rds_client.describe_db_instances(DBInstanceIdentifier=DATABASE_ID)
-        rds_endpoint = response['DBInstances'][0]['Endpoint']['Address']
-
-        # Connect to the RDS PostgreSQL database using psycopg2
-        connection = psycopg2.connect(
-            host=rds_endpoint,
-            user=USER,
-            password=PASSWORD,
-            database=DBNAME,
-            port=PORT
-        )
-
+        :return: A JSON response
+            - If successful:
+                a JSON object with the mail IDs as keys and the mail details as values
+                with HTTP status code 200 (OK).
+            - If unsuccessful:
+                a JSON object with an error message
+                with HTTP status code 500 (Internal Server Error).
+        '''
         response = {}
-
+        connection = get_connection()
         try:
             with connection.cursor() as cursor:
                 get_tables_query = f'''
@@ -124,48 +143,33 @@ class MailsSentUserGetterEndpoint(APIView):
         except Exception as e:
             # Handle exceptions appropriately
             response = {'error': str(e)}
+            return JsonResponse(response, status=500)
 
         finally:
             # Close the database connection when done
             connection.close()
 
         # Return the JSON response
-        return JsonResponse(response)
+        return JsonResponse(response, status=200)
     
 class InformationForMailGetterEndpoint(APIView):
     def get(self, request, mail_id):
-        ENDPOINT = "mailapp-database-instance.c1woi26qsnpj.us-east-1.rds.amazonaws.com"
-        DATABASE_ID = "mailapp-database-instance"
-        PORT = 5432
-        USER = "postgres"
-        ACCESS_KEY = os.environ.get("AWS_ACCESS_KEY_ID")
-        SECRET_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
-        PASSWORD = os.environ.get("AWS_DATABASE_PASSWORD")
-        REGION = "us-east-1"
-        DBNAME = "mail_db"
+        '''
+        Handle GET requests to get the information for a mail
 
-        rds_client = boto3.client(
-            'rds',
-            aws_access_key_id=ACCESS_KEY,
-            aws_secret_access_key=SECRET_KEY,
-            region_name=REGION,
-        )
+        :param request: The request object
+        :param mail_id: The ID of the mail
 
-        # Get the RDS instance details
-        response = rds_client.describe_db_instances(DBInstanceIdentifier=DATABASE_ID)
-        rds_endpoint = response['DBInstances'][0]['Endpoint']['Address']
-
-        # Connect to the RDS PostgreSQL database using psycopg2
-        connection = psycopg2.connect(
-            host=rds_endpoint,
-            user=USER,
-            password=PASSWORD,
-            database=DBNAME,
-            port=PORT
-        )
-
+        :return: A JSON response
+            - If successful:
+                a JSON object with the mail details
+                with HTTP status code 200 (OK).
+            - If unsuccessful:
+                a JSON object with an error message
+                with HTTP status code 500 (Internal Server Error).
+        '''
         response = {}
-
+        connection = get_connection()
         try:
             with connection.cursor() as cursor:
                 get_tables_query = f'''
@@ -190,48 +194,32 @@ class InformationForMailGetterEndpoint(APIView):
         except Exception as e:
             # Handle exceptions appropriately
             response = {'error': str(e)}
+            return JsonResponse(response, status=500)
 
         finally:
             # Close the database connection when done
             connection.close()
 
         # Return the JSON response
-        return JsonResponse(response)
+        return JsonResponse(response, status=200)
     
 class SendMailPostEndpoint(APIView):
     def post(self, request):
-        ENDPOINT = "mailapp-database-instance.c1woi26qsnpj.us-east-1.rds.amazonaws.com"
-        DATABASE_ID = "mailapp-database-instance"
-        PORT = 5432
-        USER = "postgres"
-        ACCESS_KEY = os.environ.get("AWS_ACCESS_KEY_ID")
-        SECRET_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
-        PASSWORD = os.environ.get("AWS_DATABASE_PASSWORD")
-        REGION = "us-east-1"
-        DBNAME = "mail_db"
+        '''
+        Handle POST requests to send a mail
 
-        rds_client = boto3.client(
-            'rds',
-            aws_access_key_id=ACCESS_KEY,
-            aws_secret_access_key=SECRET_KEY,
-            region_name=REGION,
-        )
+        :param request: The request object
 
-        # Get the RDS instance details
-        response = rds_client.describe_db_instances(DBInstanceIdentifier=DATABASE_ID)
-        rds_endpoint = response['DBInstances'][0]['Endpoint']['Address']
-
-        # Connect to the RDS PostgreSQL database using psycopg2
-        connection = psycopg2.connect(
-            host=rds_endpoint,
-            user=USER,
-            password=PASSWORD,
-            database=DBNAME,
-            port=PORT
-        )
-
+        :return: A JSON response
+            - If successful:
+                a JSON object with a success message
+                with HTTP status code 200 (OK).
+            - If unsuccessful:
+                a JSON object with an error message
+                with HTTP status code 500 (Internal Server Error).
+        '''
         response = {}
-
+        connection = get_connection()
         try:
             with connection.cursor() as cursor:
                 sender_email = request.POST.get('sender_email')
@@ -253,10 +241,138 @@ class SendMailPostEndpoint(APIView):
         except Exception as e:
             # Handle exceptions appropriately
             response = {'error': str(e)}
+            return JsonResponse(response, status=500)
 
         finally:
             # Close the database connection when done
             connection.close()
 
         # Return the JSON response
-        return JsonResponse(response)
+        return JsonResponse(response, status=200)
+    
+class CreateUserPostEndpoint(APIView):
+    def post(self, request):
+        '''
+        Handle POST requests to create a user
+
+        :param request: The request object
+
+        :return: A JSON response
+            - If successful:
+                a JSON object with a success message
+                with HTTP status code 200 (OK).
+            - If unsuccessful:
+                - If the user already exists:
+                    a JSON object with an error message
+                    with HTTP status code 400 (Bad Request).
+                - If there is an error:
+                    a JSON object with an error message
+                    with HTTP status code 500 (Internal Server Error).
+        '''
+        response = {}
+        connection = get_connection()
+        try:
+            with connection.cursor() as cursor:
+                # Get the email and password from the request
+                email = request.POST.get('email')
+                password = request.POST.get('password')
+                # Check if the user already exists
+                check_query = f"SELECT COUNT(*) FROM user_account WHERE email = '{email}'"
+                cursor.execute(check_query)
+                result = cursor.fetchone()
+                if result[0] > 0:
+                    # If the user already exists, return an error
+                    return JsonResponse({'error': 'User with this email already exists'}, status=400)
+                # Generate a random 10 characters salt
+                salt = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
+                # Concatenate salt with password
+                salted_password = salt + password
+                # Hash the salted password
+                hashed_password = hashlib.sha256(salted_password.encode()).hexdigest()
+                # Truncate hashed password to max 50 characters
+                hashed_password = hashed_password[:50]
+                # Insert the user into the database
+                insert_query = f'''
+                    INSERT INTO user_account (email, password, password_salt)
+                    VALUES ('{email}', '{hashed_password}', '{salt}');
+                '''
+                cursor.execute(insert_query)
+
+                connection.commit()
+
+                # response
+                response = {'message': 'User created successfully'}
+
+        except Exception as e:
+            # Handle exceptions appropriately
+            response = {'error': str(e)}
+            return JsonResponse(response, status=500)
+
+        finally:
+            # Close the database connection when done
+            connection.close()
+
+        # Return the JSON response
+        return JsonResponse(response, status=200)
+    
+class AuthenticationUserGetterEndpoint(APIView):
+    def get(self, request, email, password):
+        '''
+        Handle GET requests to authenticate a user
+
+        :param request: The request object
+        :param email: The email of the user
+        :param password: The password of the user
+
+        :return: A JSON response
+            - If successful:
+                a JSON object with a success message
+                with HTTP status code 200 (OK).
+            - If unsuccessful:
+                - If the user does not exist:
+                    a JSON object with an error message
+                    with HTTP status code 400 (Bad Request).
+                - If the password is incorrect:
+                    a JSON object with an error message
+                    with HTTP status code 401 (Unauthorized).
+                - If there is an error:
+                    a JSON object with an error message
+                    with HTTP status code 500 (Internal Server Error).
+        '''
+        response = {}
+        connection = get_connection()
+        try:
+            with connection.cursor() as cursor:
+                # Check if the user exists
+                check_query = f"SELECT password, password_salt FROM user_account WHERE email = '{email}'"
+                cursor.execute(check_query)
+                result = cursor.fetchone()
+                if not result:
+                    # If the user does not exist, return an error
+                    return JsonResponse({'error': 'User with this email does not exist'}, status=400)
+                # Get the hashed password and salt
+                hashed_password, salt = result
+                # Concatenate salt with password
+                salted_password = salt + password
+                # Hash the salted password
+                hashed_password_to_check = hashlib.sha256(salted_password.encode()).hexdigest()
+                # Truncate hashed password to max 50 characters
+                hashed_password_to_check = hashed_password_to_check[:50]
+                # Check if the password is correct
+                if hashed_password_to_check != hashed_password:
+                    # If the password is incorrect, return an error
+                    return JsonResponse({'error': 'Incorrect password'}, status=401)
+                # If the user exists and the password is correct, return a success message
+                response = {'message': 'User authenticated successfully'}
+
+        except Exception as e:
+            # Handle exceptions appropriately
+            response = {'error': str(e)}
+            return JsonResponse(response, status=500)
+
+        finally:
+            # Close the database connection when done
+            connection.close()
+
+        # Return the JSON response
+        return JsonResponse(response, status=200)
