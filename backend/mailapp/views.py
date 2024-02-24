@@ -4,22 +4,32 @@ from django.http import JsonResponse
 import boto3
 import psycopg2
 import os
+import threading
+thread_local = threading.local()
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env')
 load_dotenv(dotenv_path)
 
-class MailsReceivedUserGetterEndpoint(APIView):
-    def get(self, request, user_mail):
-        ENDPOINT = "mailapp-database-instance.c1woi26qsnpj.us-east-1.rds.amazonaws.com"
-        DATABASE_ID = "mailapp-database-instance"
-        PORT = 5432
-        USER = "postgres"
-        ACCESS_KEY = os.environ.get("AWS_ACCESS_KEY_ID")
-        SECRET_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
-        PASSWORD = os.environ.get("AWS_DATABASE_PASSWORD")
-        REGION = "us-east-1"
-        DBNAME = "mail_db"
+ENDPOINT = "mailapp-database-instance.c1woi26qsnpj.us-east-1.rds.amazonaws.com"
+DATABASE_ID = "mailapp-database-instance"
+PORT = 5432
+USER = "postgres"
+ACCESS_KEY = os.environ.get("AWS_ACCESS_KEY_ID")
+SECRET_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+PASSWORD = os.environ.get("AWS_DATABASE_PASSWORD")
+REGION = "us-east-1"
+DBNAME = "mail_db"
 
+@staticmethod
+def get_connection():
+    """
+    Get a connection to the RDS PostgreSQL database.
+
+    :return: The connection to the RDS PostgreSQL database.
+    """
+    # Retrieve or create a client for the current thread
+    if not hasattr(thread_local, "connection"):
+        # Set up the boto3 client
         rds_client = boto3.client(
             'rds',
             aws_access_key_id=ACCESS_KEY,
@@ -40,8 +50,29 @@ class MailsReceivedUserGetterEndpoint(APIView):
             port=PORT
         )
 
-        response = {}
+        thread_local.client = rds_client
+        thread_local.connection = connection
+    # Return the client
+    return thread_local.connection
 
+class MailsReceivedUserGetterEndpoint(APIView):
+    def get(self, request, user_mail):
+        '''
+        Handle GET requests to get all the mails received by a user
+
+        :param request: The request object
+        :param user_mail: The email of the user
+
+        :return: A JSON response
+            - If successful:
+                a JSON object with the mail IDs as keys and the mail details as values
+                with HTTP status code 200 (OK).
+            - If unsuccessful:
+                a JSON object with an error message
+                with HTTP status code 500 (Internal Server Error).
+        '''
+        response = {}
+        connection = get_connection()
         try:
             with connection.cursor() as cursor:
                 get_tables_query = f'''
@@ -62,48 +93,19 @@ class MailsReceivedUserGetterEndpoint(APIView):
         except Exception as e:
             # Handle exceptions appropriately
             response = {'error': str(e)}
+            return JsonResponse(response, status=500)
 
         finally:
             # Close the database connection when done
             connection.close()
 
         # Return the JSON response
-        return JsonResponse(response)
+        return JsonResponse(response, status=200)
     
 class MailsSentUserGetterEndpoint(APIView):
     def get(self, request, user_mail):
-        ENDPOINT = "mailapp-database-instance.c1woi26qsnpj.us-east-1.rds.amazonaws.com"
-        DATABASE_ID = "mailapp-database-instance"
-        PORT = 5432
-        USER = "postgres"
-        ACCESS_KEY = os.environ.get("AWS_ACCESS_KEY_ID")
-        SECRET_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
-        PASSWORD = os.environ.get("AWS_DATABASE_PASSWORD")
-        REGION = "us-east-1"
-        DBNAME = "mail_db"
-
-        rds_client = boto3.client(
-            'rds',
-            aws_access_key_id=ACCESS_KEY,
-            aws_secret_access_key=SECRET_KEY,
-            region_name=REGION,
-        )
-
-        # Get the RDS instance details
-        response = rds_client.describe_db_instances(DBInstanceIdentifier=DATABASE_ID)
-        rds_endpoint = response['DBInstances'][0]['Endpoint']['Address']
-
-        # Connect to the RDS PostgreSQL database using psycopg2
-        connection = psycopg2.connect(
-            host=rds_endpoint,
-            user=USER,
-            password=PASSWORD,
-            database=DBNAME,
-            port=PORT
-        )
-
         response = {}
-
+        connection = get_connection()
         try:
             with connection.cursor() as cursor:
                 get_tables_query = f'''
@@ -124,6 +126,7 @@ class MailsSentUserGetterEndpoint(APIView):
         except Exception as e:
             # Handle exceptions appropriately
             response = {'error': str(e)}
+            return JsonResponse(response, status=500)
 
         finally:
             # Close the database connection when done
@@ -134,38 +137,8 @@ class MailsSentUserGetterEndpoint(APIView):
     
 class InformationForMailGetterEndpoint(APIView):
     def get(self, request, mail_id):
-        ENDPOINT = "mailapp-database-instance.c1woi26qsnpj.us-east-1.rds.amazonaws.com"
-        DATABASE_ID = "mailapp-database-instance"
-        PORT = 5432
-        USER = "postgres"
-        ACCESS_KEY = os.environ.get("AWS_ACCESS_KEY_ID")
-        SECRET_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
-        PASSWORD = os.environ.get("AWS_DATABASE_PASSWORD")
-        REGION = "us-east-1"
-        DBNAME = "mail_db"
-
-        rds_client = boto3.client(
-            'rds',
-            aws_access_key_id=ACCESS_KEY,
-            aws_secret_access_key=SECRET_KEY,
-            region_name=REGION,
-        )
-
-        # Get the RDS instance details
-        response = rds_client.describe_db_instances(DBInstanceIdentifier=DATABASE_ID)
-        rds_endpoint = response['DBInstances'][0]['Endpoint']['Address']
-
-        # Connect to the RDS PostgreSQL database using psycopg2
-        connection = psycopg2.connect(
-            host=rds_endpoint,
-            user=USER,
-            password=PASSWORD,
-            database=DBNAME,
-            port=PORT
-        )
-
         response = {}
-
+        connection = get_connection()
         try:
             with connection.cursor() as cursor:
                 get_tables_query = f'''
@@ -190,6 +163,7 @@ class InformationForMailGetterEndpoint(APIView):
         except Exception as e:
             # Handle exceptions appropriately
             response = {'error': str(e)}
+            return JsonResponse(response, status=500)
 
         finally:
             # Close the database connection when done
@@ -200,38 +174,8 @@ class InformationForMailGetterEndpoint(APIView):
     
 class SendMailPostEndpoint(APIView):
     def post(self, request):
-        ENDPOINT = "mailapp-database-instance.c1woi26qsnpj.us-east-1.rds.amazonaws.com"
-        DATABASE_ID = "mailapp-database-instance"
-        PORT = 5432
-        USER = "postgres"
-        ACCESS_KEY = os.environ.get("AWS_ACCESS_KEY_ID")
-        SECRET_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
-        PASSWORD = os.environ.get("AWS_DATABASE_PASSWORD")
-        REGION = "us-east-1"
-        DBNAME = "mail_db"
-
-        rds_client = boto3.client(
-            'rds',
-            aws_access_key_id=ACCESS_KEY,
-            aws_secret_access_key=SECRET_KEY,
-            region_name=REGION,
-        )
-
-        # Get the RDS instance details
-        response = rds_client.describe_db_instances(DBInstanceIdentifier=DATABASE_ID)
-        rds_endpoint = response['DBInstances'][0]['Endpoint']['Address']
-
-        # Connect to the RDS PostgreSQL database using psycopg2
-        connection = psycopg2.connect(
-            host=rds_endpoint,
-            user=USER,
-            password=PASSWORD,
-            database=DBNAME,
-            port=PORT
-        )
-
         response = {}
-
+        connection = get_connection()
         try:
             with connection.cursor() as cursor:
                 sender_email = request.POST.get('sender_email')
@@ -253,6 +197,7 @@ class SendMailPostEndpoint(APIView):
         except Exception as e:
             # Handle exceptions appropriately
             response = {'error': str(e)}
+            return JsonResponse(response, status=500)
 
         finally:
             # Close the database connection when done
