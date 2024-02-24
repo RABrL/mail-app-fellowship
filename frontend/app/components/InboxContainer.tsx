@@ -8,7 +8,7 @@ export interface InboxContainerProps {
 }
 
 export function InboxContainer(props: InboxContainerProps): ReactElement {
-  const [choosed, setChoosed] = useState<number>(1)
+  const [choosed, setChoosed] = useState<string>('')
   const emails: Email[] = JSON.parse(JSON.stringify(emailsData))
   return (
     <section className="w-1/4 min-w-96 ">
