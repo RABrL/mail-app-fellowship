@@ -314,3 +314,65 @@ class CreateUserPostEndpoint(APIView):
 
         # Return the JSON response
         return JsonResponse(response, status=200)
+    
+class AuthenticationUserGetterEndpoint(APIView):
+    def get(self, request, email, password):
+        '''
+        Handle GET requests to authenticate a user
+
+        :param request: The request object
+        :param email: The email of the user
+        :param password: The password of the user
+
+        :return: A JSON response
+            - If successful:
+                a JSON object with a success message
+                with HTTP status code 200 (OK).
+            - If unsuccessful:
+                - If the user does not exist:
+                    a JSON object with an error message
+                    with HTTP status code 400 (Bad Request).
+                - If the password is incorrect:
+                    a JSON object with an error message
+                    with HTTP status code 401 (Unauthorized).
+                - If there is an error:
+                    a JSON object with an error message
+                    with HTTP status code 500 (Internal Server Error).
+        '''
+        response = {}
+        connection = get_connection()
+        try:
+            with connection.cursor() as cursor:
+                # Check if the user exists
+                check_query = f"SELECT password, password_salt FROM user_account WHERE email = '{email}'"
+                cursor.execute(check_query)
+                result = cursor.fetchone()
+                if not result:
+                    # If the user does not exist, return an error
+                    return JsonResponse({'error': 'User with this email does not exist'}, status=400)
+                # Get the hashed password and salt
+                hashed_password, salt = result
+                # Concatenate salt with password
+                salted_password = salt + password
+                # Hash the salted password
+                hashed_password_to_check = hashlib.sha256(salted_password.encode()).hexdigest()
+                # Truncate hashed password to max 50 characters
+                hashed_password_to_check = hashed_password_to_check[:50]
+                # Check if the password is correct
+                if hashed_password_to_check != hashed_password:
+                    # If the password is incorrect, return an error
+                    return JsonResponse({'error': 'Incorrect password'}, status=401)
+                # If the user exists and the password is correct, return a success message
+                response = {'message': 'User authenticated successfully'}
+
+        except Exception as e:
+            # Handle exceptions appropriately
+            response = {'error': str(e)}
+            return JsonResponse(response, status=500)
+
+        finally:
+            # Close the database connection when done
+            connection.close()
+
+        # Return the JSON response
+        return JsonResponse(response, status=200)
