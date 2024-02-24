@@ -8,6 +8,7 @@ import threading
 import random
 import string
 import hashlib
+
 thread_local = threading.local()
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env')
@@ -23,7 +24,7 @@ PASSWORD = os.environ.get("AWS_DATABASE_PASSWORD")
 REGION = "us-east-1"
 DBNAME = "mail_db"
 
-@staticmethod
+
 def get_connection():
     """
     Get a connection to the RDS PostgreSQL database.
@@ -58,9 +59,10 @@ def get_connection():
     # Return the client
     return thread_local.connection
 
+
 class MailsReceivedUserGetterEndpoint(APIView):
     def get(self, request, user_mail):
-        '''
+        """
         Handle GET requests to get all the mails received by a user
 
         :param request: The request object
@@ -73,15 +75,15 @@ class MailsReceivedUserGetterEndpoint(APIView):
             - If unsuccessful:
                 a JSON object with an error message
                 with HTTP status code 500 (Internal Server Error).
-        '''
-        response = {}
+        """
+
         connection = get_connection()
         try:
             with connection.cursor() as cursor:
-                get_tables_query = f'''
-                    SELECT mail_id, sender_email, subject, sent_date FROM mail WHERE receiver_email =  '{user_mail}';
+                get_tables_query = '''
+                    SELECT mail_id, sender_email, subject, sent_date FROM mail WHERE receiver_email =  (%s);
                 '''
-                cursor.execute(get_tables_query)
+                cursor.execute(get_tables_query, (user_mail,))
 
                 # Fetch the results
                 response = {}
@@ -104,10 +106,11 @@ class MailsReceivedUserGetterEndpoint(APIView):
 
         # Return the JSON response
         return JsonResponse(response, status=200)
-    
+
+
 class MailsSentUserGetterEndpoint(APIView):
     def get(self, request, user_mail):
-        '''
+        """
         Handle GET requests to get all the mails sent by a user
 
         :param request: The request object
@@ -120,15 +123,15 @@ class MailsSentUserGetterEndpoint(APIView):
             - If unsuccessful:
                 a JSON object with an error message
                 with HTTP status code 500 (Internal Server Error).
-        '''
+        """
         response = {}
         connection = get_connection()
         try:
             with connection.cursor() as cursor:
-                get_tables_query = f'''
-                    SELECT mail_id, receiver_email, subject, sent_date FROM mail WHERE sender_email =  '{user_mail}';
+                get_tables_query = '''
+                    SELECT mail_id, receiver_email, subject, sent_date FROM mail WHERE sender_email =  (%s);
                 '''
-                cursor.execute(get_tables_query)
+                cursor.execute(get_tables_query, (user_mail,))
 
                 # Fetch the results
                 response = {}
@@ -151,10 +154,11 @@ class MailsSentUserGetterEndpoint(APIView):
 
         # Return the JSON response
         return JsonResponse(response, status=200)
-    
+
+
 class InformationForMailGetterEndpoint(APIView):
     def get(self, request, mail_id):
-        '''
+        """
         Handle GET requests to get the information for a mail
 
         :param request: The request object
@@ -167,19 +171,19 @@ class InformationForMailGetterEndpoint(APIView):
             - If unsuccessful:
                 a JSON object with an error message
                 with HTTP status code 500 (Internal Server Error).
-        '''
+        """
         response = {}
         connection = get_connection()
         try:
             with connection.cursor() as cursor:
-                get_tables_query = f'''
-                    SELECT * FROM mail WHERE mail_id = '{mail_id}';
+                get_tables_query = '''
+                    SELECT * FROM mail WHERE mail_id = (%s);
                 '''
-                cursor.execute(get_tables_query)
+                cursor.execute(get_tables_query, (mail_id,))
 
                 # Fetch the results
                 for row in cursor.fetchall():
-                    mail_id, sender_email, receiver_email, subject, content, folder_id, sent_date  = row
+                    mail_id, sender_email, receiver_email, subject, content, folder_id, sent_date = row
                     response = {
                         'mail_id': mail_id,
                         'sender_email': sender_email,
@@ -189,7 +193,6 @@ class InformationForMailGetterEndpoint(APIView):
                         'folder_id': folder_id,
                         'sent_date': sent_date.strftime('%Y-%m-%d %H:%M:%S') if sent_date else None,
                     }
-
 
         except Exception as e:
             # Handle exceptions appropriately
@@ -202,10 +205,11 @@ class InformationForMailGetterEndpoint(APIView):
 
         # Return the JSON response
         return JsonResponse(response, status=200)
-    
+
+
 class SendMailPostEndpoint(APIView):
     def post(self, request):
-        '''
+        """
         Handle POST requests to send a mail
 
         :param request: The request object
@@ -217,7 +221,7 @@ class SendMailPostEndpoint(APIView):
             - If unsuccessful:
                 a JSON object with an error message
                 with HTTP status code 500 (Internal Server Error).
-        '''
+       """
         response = {}
         connection = get_connection()
         try:
@@ -227,11 +231,11 @@ class SendMailPostEndpoint(APIView):
                 subject = request.POST.get('subject')
                 content = request.POST.get('content')
 
-                insert_query = f'''
+                insert_query = '''
                     INSERT INTO mail (sender_email, receiver_email, subject, content)
-                    VALUES ('{sender_email}', '{receiver_email}', '{subject}', '{content}');
+                    VALUES (%s, %s, %s, %s);
                 '''
-                cursor.execute(insert_query)
+                cursor.execute(insert_query, (sender_email, receiver_email, subject, content))
 
                 connection.commit()
 
@@ -249,10 +253,11 @@ class SendMailPostEndpoint(APIView):
 
         # Return the JSON response
         return JsonResponse(response, status=200)
-    
+
+
 class CreateUserPostEndpoint(APIView):
     def post(self, request):
-        '''
+        """
         Handle POST requests to create a user
 
         :param request: The request object
@@ -268,7 +273,7 @@ class CreateUserPostEndpoint(APIView):
                 - If there is an error:
                     a JSON object with an error message
                     with HTTP status code 500 (Internal Server Error).
-        '''
+        """
         response = {}
         connection = get_connection()
         try:
@@ -277,8 +282,8 @@ class CreateUserPostEndpoint(APIView):
                 email = request.POST.get('email')
                 password = request.POST.get('password')
                 # Check if the user already exists
-                check_query = f"SELECT COUNT(*) FROM user_account WHERE email = '{email}'"
-                cursor.execute(check_query)
+                check_query = "SELECT COUNT(*) FROM user_account WHERE email = (%s)"
+                cursor.execute(check_query, (email,))
                 result = cursor.fetchone()
                 if result[0] > 0:
                     # If the user already exists, return an error
@@ -292,11 +297,11 @@ class CreateUserPostEndpoint(APIView):
                 # Truncate hashed password to max 50 characters
                 hashed_password = hashed_password[:50]
                 # Insert the user into the database
-                insert_query = f'''
+                insert_query = '''
                     INSERT INTO user_account (email, password, password_salt)
-                    VALUES ('{email}', '{hashed_password}', '{salt}');
+                    VALUES ((%s), (%s), (%s));
                 '''
-                cursor.execute(insert_query)
+                cursor.execute(insert_query, (email, hashed_password, salt))
 
                 connection.commit()
 
@@ -314,10 +319,11 @@ class CreateUserPostEndpoint(APIView):
 
         # Return the JSON response
         return JsonResponse(response, status=200)
-    
+
+
 class AuthenticationUserGetterEndpoint(APIView):
     def get(self, request, email, password):
-        '''
+        """
         Handle GET requests to authenticate a user
 
         :param request: The request object
@@ -338,14 +344,14 @@ class AuthenticationUserGetterEndpoint(APIView):
                 - If there is an error:
                     a JSON object with an error message
                     with HTTP status code 500 (Internal Server Error).
-        '''
+        """
         response = {}
         connection = get_connection()
         try:
             with connection.cursor() as cursor:
                 # Check if the user exists
-                check_query = f"SELECT password, password_salt FROM user_account WHERE email = '{email}'"
-                cursor.execute(check_query)
+                check_query = "SELECT password, password_salt FROM user_account WHERE email = (%s)"
+                cursor.execute(check_query, (email,))
                 result = cursor.fetchone()
                 if not result:
                     # If the user does not exist, return an error
