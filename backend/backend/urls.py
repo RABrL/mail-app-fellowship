@@ -15,15 +15,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from mailapp.views import *
 
 urlpatterns = [
     path('api/admin/', admin.site.urls),
-    path('api/mails/received/<str:user_mail>/', MailsReceivedUserGetterEndpoint.as_view()),
-    path('api/mails/sent/<str:user_mail>/', MailsSentUserGetterEndpoint.as_view()),
-    path('api/mail/information/<str:mail_id>', InformationForMailGetterEndpoint.as_view()),
-    path('api/mails/', SendMailPostEndpoint.as_view()),
+    path('api/mails/', include('mailapp.urls')),
     path('api/user/', CreateUserPostEndpoint.as_view()),
     path('api/user/authentication/<str:email>/<str:password>/', AuthenticationUserGetterEndpoint.as_view()),
 ]
