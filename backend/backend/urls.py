@@ -24,4 +24,5 @@ urlpatterns = [
     path('mails/get/sent/<str:user_mail>/', MailsSentUserGetterEndpoint.as_view()),
     path('mail/get/information/<str:mail_id>', InformationForMailGetterEndpoint.as_view()),
     path('mail/post/mail/', SendMailPostEndpoint.as_view()),
+    path('user/post/create/', CreateUserPostEndpoint.as_view()),
 ]

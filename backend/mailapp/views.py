@@ -5,6 +5,9 @@ import boto3
 import psycopg2
 import os
 import threading
+import random
+import string
+import hashlib
 thread_local = threading.local()
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env')
@@ -234,6 +237,71 @@ class SendMailPostEndpoint(APIView):
 
                 # response
                 response = {'message': 'Mail sent successfully'}
+
+        except Exception as e:
+            # Handle exceptions appropriately
+            response = {'error': str(e)}
+            return JsonResponse(response, status=500)
+
+        finally:
+            # Close the database connection when done
+            connection.close()
+
+        # Return the JSON response
+        return JsonResponse(response, status=200)
+    
+class CreateUserPostEndpoint(APIView):
+    def post(self, request):
+        '''
+        Handle POST requests to create a user
+
+        :param request: The request object
+
+        :return: A JSON response
+            - If successful:
+                a JSON object with a success message
+                with HTTP status code 200 (OK).
+            - If unsuccessful:
+                - If the user already exists:
+                    a JSON object with an error message
+                    with HTTP status code 400 (Bad Request).
+                - If there is an error:
+                    a JSON object with an error message
+                    with HTTP status code 500 (Internal Server Error).
+        '''
+        response = {}
+        connection = get_connection()
+        try:
+            with connection.cursor() as cursor:
+                # Get the email and password from the request
+                email = request.POST.get('email')
+                password = request.POST.get('password')
+                # Check if the user already exists
+                check_query = f"SELECT COUNT(*) FROM user_account WHERE email = '{email}'"
+                cursor.execute(check_query)
+                result = cursor.fetchone()
+                if result[0] > 0:
+                    # If the user already exists, return an error
+                    return JsonResponse({'error': 'User with this email already exists'}, status=400)
+                # Generate a random 10 characters salt
+                salt = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
+                # Concatenate salt with password
+                salted_password = salt + password
+                # Hash the salted password
+                hashed_password = hashlib.sha256(salted_password.encode()).hexdigest()
+                # Truncate hashed password to max 50 characters
+                hashed_password = hashed_password[:50]
+                # Insert the user into the database
+                insert_query = f'''
+                    INSERT INTO user_account (email, password, password_salt)
+                    VALUES ('{email}', '{hashed_password}', '{salt}');
+                '''
+                cursor.execute(insert_query)
+
+                connection.commit()
+
+                # response
+                response = {'message': 'User created successfully'}
 
         except Exception as e:
             # Handle exceptions appropriately
