@@ -53,6 +53,10 @@ INSTALLED_APPS = [
     'mailapp.apps.MailappConfig',  # Add this line to the INSTALLED_APPS list
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    '*',
+]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -87,8 +91,6 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
