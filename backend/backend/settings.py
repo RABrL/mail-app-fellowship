@@ -35,7 +35,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 CORS_ORIGIN_ALLOW_ALL = False
-CORS_ORIGIN_WHITELIST = (
+CORS_ALLOWED_ORIGINS = (
   'http://localhost:3000',
 )
 
@@ -51,10 +51,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'mailapp.apps.MailappConfig',  # Add this line to the INSTALLED_APPS list
-]
-
-CORS_ALLOWED_ORIGINS = [
-    '*',
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,62 @@
+[
+  {
+    "id": "001",
+    "subject": "Meeting Reminder",
+    "remitent": "john.doe@example.com",
+    "body": "Dear team,\n\nThis is a reminder that our weekly meeting will be held tomorrow at 10:00 AM. Please make sure to prepare your reports.\n\nBest regards,\nJohn"
+  },
+  {
+    "id": "002",
+    "subject": "Vacation Request Approval",
+    "remitent": "manager@example.com",
+    "body": "Hello,\n\nI'm pleased to inform you that your vacation request has been approved. You are all set to enjoy your time off starting from next Monday.\n\nBest regards,\nThe Management"
+  },
+  {
+    "id": "003",
+    "subject": "Project Update",
+    "remitent": "project.team@example.com",
+    "body": "Hi everyone,\n\nI wanted to provide a quick update on our project progress. We've successfully completed the first phase and are now moving onto the next milestone.\n\nThanks,\nThe Project Team"
+  },
+  {
+    "id": "004",
+    "subject": "Weekly Newsletter",
+    "remitent": "newsletter@example.com",
+    "body": "Dear subscribers,\n\nWelcome to our weekly newsletter! In this edition, we cover the latest news, trends, and updates in technology.\n\nBest regards,\nThe Newsletter Team"
+  },
+  {
+    "id": "005",
+    "subject": "Account Activation",
+    "remitent": "support@example.com",
+    "body": "Dear user,\n\nThank you for signing up! To activate your account, please click on the activation link provided below.\n\nActivation Link: https://example.com/activate\n\nBest regards,\nThe Support Team"
+  },
+  {
+    "id": "006",
+    "subject": "New Product Announcement",
+    "remitent": "marketing@example.com",
+    "body": "Hello,\n\nWe're excited to announce the launch of our latest product! Check out the details on our website and take advantage of our special launch offer.\n\nBest regards,\nThe Marketing Team"
+  },
+  {
+    "id": "007",
+    "subject": "Important Security Update",
+    "remitent": "security@example.com",
+    "body": "Dear customers,\n\nWe recently identified a security vulnerability in our system and have taken immediate action to address it. Please update your account password as a precaution.\n\nBest regards,\nThe Security Team"
+  },
+  {
+    "id": "008",
+    "subject": "Feedback Request",
+    "remitent": "feedback@example.com",
+    "body": "Hi,\n\nWe value your opinion! Please take a moment to provide feedback on your recent experience with our product/service. Your input helps us improve.\n\nBest regards,\nThe Feedback Team"
+  },
+  {
+    "id": "009",
+    "subject": "Invitation to Webinar",
+    "remitent": "events@example.com",
+    "body": "Dear subscriber,\n\nYou're invited to attend our upcoming webinar on 'Effective Time Management Strategies'. Register now to secure your spot!\n\nBest regards,\nThe Events Team"
+  },
+  {
+    "id": "010",
+    "subject": "Job Opportunity",
+    "remitent": "careers@example.com",
+    "body": "Hello,\n\nWe have an exciting job opportunity for a talented individual to join our team! Check out the job description and apply today.\n\nBest regards,\nThe Careers Team"
+  }
+]

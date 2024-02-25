@@ -1,4 +1,4 @@
-export const  tailwindColors = [
+export const tailwindColors = [
   'bg-red-500',
   'bg-blue-500',
   'bg-green-500',
@@ -16,6 +16,6 @@ export const  tailwindColors = [
   'bg-violet-500',
   'bg-violet-600',
   'bg-orange-500',
-  'bg-cyan-400',
+  'bg-cyan-400'
   // Agrega más colores según tus necesidades
-];
+]
