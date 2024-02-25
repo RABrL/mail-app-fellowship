@@ -220,11 +220,10 @@ class SendMailPostEndpoint(APIView):
         try:
             with connection.cursor() as cursor:
 
-                sender_email = request.data['body']['sender_email']
-                receiver_email = request.data['body']['receiver_email']
-                subject = request.data['body']['subject']
-                content = request.data['body']['content']
-
+                sender_email = request.data['sender_email']
+                receiver_email = request.data['receiver_email']
+                subject = request.data['subject']
+                content = request.data['content']
                 insert_query = '''
                     INSERT INTO mail (sender_email, receiver_email, subject, content)
                     VALUES (%s, %s, %s, %s);
