@@ -26,12 +26,13 @@ const SendEmailForm = ({ className }: SendEmailFormProps) => {
       if (!emailRegex.test(receiver.toString()))
         throw new Error('El correo no es valido')
 
-      sendEmail({
+      const [error, data] = sendEmail({
         receiver_email: receiver,
         content,
         subject,
         sender_email: 'juan1010.jerm@gmail.com'
       })
+      if (error) throw error
       event.currentTarget.reset()
     } catch (error) {
       if (error instanceof Error) return alert(error.message)
@@ -69,6 +70,7 @@ const SendEmailForm = ({ className }: SendEmailFormProps) => {
         />
       </div>
       <button
+        type="submit"
         disabled={isLoading}
         className="max-w-28 text-sm rounded-md px-4 h-8 bg-[#0F6CBD] text-white flex items-center justify-between hover:bg-[#0F548C] transition"
       >
