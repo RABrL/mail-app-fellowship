@@ -33,7 +33,10 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', 'http://localhost:3000', '127.0.0.1']
+CORS_ALLOWED_ORIGINS = [	
+    'http://localhost:3000',	
+]
 
 # Application definition
 
@@ -45,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',
     'mailapp.apps.MailappConfig',  # Add this line to the INSTALLED_APPS list
 ]
 
