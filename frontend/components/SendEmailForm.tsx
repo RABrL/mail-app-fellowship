@@ -2,6 +2,7 @@
 
 import { sendEmail } from '@/services/sendEmail'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 interface SendEmailFormProps {
   className?: string
@@ -9,33 +10,23 @@ interface SendEmailFormProps {
 
 const SendEmailForm = ({ className }: SendEmailFormProps) => {
   const [isLoading, setIsLoading] = useState(false)
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setIsLoading(true)
     try {
-      const formData = new FormData(event.currentTarget)
-      const receiver = formData.get('receiver')?.toString()
-      const content = formData.get('content')?.toString()
-      const subject = formData.get('subject')?.toString()
+      const form = event.currentTarget
+      const formData = new FormData(form)
 
-      if (!receiver || !content || !subject)
-        throw new Error('Todos los campos son requeridos')
+      const [error, _] = await sendEmail(formData)
 
-      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+      if (error) throw error
 
-      if (!emailRegex.test(receiver.toString()))
-        throw new Error('El correo no es valido')
-
-      sendEmail({
-        receiver_email: receiver,
-        content,
-        subject,
-        sender_email: 'juan1010.jerm@gmail.com'
-      })
-      event.currentTarget.reset()
+      toast.success('Correo enviado correctamente')
+      form.reset()
     } catch (error) {
-      if (error instanceof Error) return alert(error.message)
-      return alert('Algo salio mal')
+      if (error instanceof Error) return toast.error(error.message)
+      return toast.error('Something went wrong')
     } finally {
       setIsLoading(false)
     }
@@ -69,6 +60,7 @@ const SendEmailForm = ({ className }: SendEmailFormProps) => {
         />
       </div>
       <button
+        type="submit"
         disabled={isLoading}
         className="max-w-28 text-sm rounded-md px-4 h-8 bg-[#0F6CBD] text-white flex items-center justify-between hover:bg-[#0F548C] transition"
       >
