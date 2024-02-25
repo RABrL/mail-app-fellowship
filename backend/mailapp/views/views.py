@@ -146,10 +146,6 @@ class MailsSentUserGetterEndpoint(APIView):
             response = {'error': str(e)}
             return JsonResponse(response, status=500)
 
-        finally:
-            # Close the database connection when done
-            connection.close()
-
         # Return the JSON response
         return JsonResponse(response, status=200, safe=False)
     
@@ -244,10 +240,6 @@ class SendMailPostEndpoint(APIView):
             response = {'error': str(e)}
             return JsonResponse(response, status=500)
 
-        finally:
-            # Close the database connection when done
-            connection.close()
-
         # Return the JSON response
         return JsonResponse(response, status=200)
 
@@ -310,10 +302,6 @@ class CreateUserPostEndpoint(APIView):
             response = {'error': str(e)}
             return JsonResponse(response, status=500)
 
-        finally:
-            # Close the database connection when done
-            connection.close()
-
         # Return the JSON response
         return JsonResponse(response, status=201)
     
@@ -371,10 +359,6 @@ class AuthenticationUserGetterEndpoint(APIView):
             # Handle exceptions appropriately
             response = {'error': str(e)}
             return JsonResponse(response, status=500)
-
-        finally:
-            # Close the database connection when done
-            connection.close()
 
         # Return the JSON response
         return JsonResponse(response, status=200)
