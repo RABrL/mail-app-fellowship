@@ -1,4 +1,4 @@
-import { tailwindColors } from '../../utils/randomColors'
+import { tailwindColors } from '@/utils/randomColors'
 import { getAnEmail } from '@/services/getEmails'
 
 export default async function EmailPage({
@@ -15,7 +15,7 @@ export default async function EmailPage({
     <section className="py-8 text-text font-semibold px-16 bg-slate-50 w-2/3">
       <div className="flex">
         <div
-          className={` ${cardColor} flex justify-center items-center  rounded-full w-14 h-14`}
+          className={`${cardColor} flex justify-center items-center rounded-full w-14 h-14`}
         >
           <h2 className=" text-2xl text-slate-50 ">
             {email?.sender_email?.slice(0, 1)}
