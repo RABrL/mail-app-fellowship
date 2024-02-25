@@ -39,6 +39,7 @@ CORS_ALLOWED_ORIGINS = (
   'http://localhost:3000',
 )
 
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -63,6 +64,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware'
 ]
+
+CORS_ORIGIN_WHITELIST = (
+  'http://localhost',
+)
 
 ROOT_URLCONF = 'backend.urls'
 

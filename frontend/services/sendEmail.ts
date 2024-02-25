@@ -11,7 +11,7 @@ export async function sendEmail({
   sender_email,
   receiver_email
 }: sendEmailProps) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/mails`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/mails/`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
