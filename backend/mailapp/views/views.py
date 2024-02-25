@@ -271,10 +271,10 @@ class CreateUserPostEndpoint(APIView):
                 email = request.POST.get('email')
                 password = request.POST.get('password')
                 # Check if the user already exists
-                check_query = "SELECT COUNT(*) FROM user_account WHERE email = (%s)"
+                check_query = "SELECT email FROM user_account WHERE email = (%s)"
                 cursor.execute(check_query, (email,))
                 result = cursor.fetchone()
-                if result[0] > 0:
+                if result[0] == email:
                     # If the user already exists, return an error
                     return JsonResponse({'error': 'User with this email already exists'}, status=409)
                 # Generate a random 10 characters salt
