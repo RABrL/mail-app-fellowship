@@ -13,12 +13,9 @@ export function InboxContainer(props: InboxContainerProps): ReactElement {
     const fetchEmails = async () => {
       try {
         const res =  await getEmailsByUser(1)
-        const emailsArray = Object.keys(res?.data).map((key) => ({
-            id: key,
-            ...res?.data[key],
-          }));
-        setEmails(emailsArray)
-        console.log(res?.data)
+        const emails = res?.data
+        if(!emails || emails.length === 0) return
+        setEmails(emails) 
       } catch (error) {
         console.error(error)
       }
@@ -29,8 +26,8 @@ export function InboxContainer(props: InboxContainerProps): ReactElement {
   return (
     <section className="w-1/4 min-w-96 overflow-y-scroll">
       {emails.map(( email, index ) => (
-            <InboxCard key={email.id} {...email} choosed={choosed} setChoosed={setChoosed}/>
-          ))}
+        <InboxCard key={email.mail_id} {...email} choosed={choosed} setChoosed={setChoosed}/>
+      ))}
 
 
     </section>
