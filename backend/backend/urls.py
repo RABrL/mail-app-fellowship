@@ -16,11 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from mailapp.views import *
+from mailapp.views.views import *
 
 urlpatterns = [
     path('api/admin/', admin.site.urls),
     path('api/mails/', include('mailapp.urls')),
     path('api/user/', CreateUserPostEndpoint.as_view()),
-    path('api/user/authentication/<str:email>/<str:password>/', AuthenticationUserGetterEndpoint.as_view()),
+    path('api/user/authentication/<str:email>/<str:password>', AuthenticationUserGetterEndpoint.as_view()),
 ]
