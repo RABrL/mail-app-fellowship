@@ -2,7 +2,7 @@
 import { useEffect, type ReactElement, useState } from "react"
 import { InboxCard } from "./InboxCard"
 import { Email } from "../types/EmailInterface"
-import { getEmailsByUser } from "@/api/getEmails.api"
+import { getEmailsByUser } from "@/services/getEmails"
 export interface InboxContainerProps {
   
 }

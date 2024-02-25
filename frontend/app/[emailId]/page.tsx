@@ -1,5 +1,5 @@
 import {tailwindColors} from "../assets/randomColors"
-import { getAnEmail } from "@/api/getEmails.api"
+import { getAnEmail } from "@/services/getEmails"
 export interface EmailPageProps {
   
 }
