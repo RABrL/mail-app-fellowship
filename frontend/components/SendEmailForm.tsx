@@ -26,7 +26,7 @@ const SendEmailForm = ({ className }: SendEmailFormProps) => {
       if (!emailRegex.test(receiver.toString()))
         throw new Error('El correo no es valido')
 
-      const [error, data] = sendEmail({
+      const [error, _] = sendEmail({
         receiver_email: receiver,
         content,
         subject,

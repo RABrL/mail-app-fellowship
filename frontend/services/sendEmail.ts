@@ -25,9 +25,10 @@ export async function sendEmail({
   })
 
   if (!res.ok) {
-    throw new Error('Failed to send email')
+    return [new Error('Error al enviar el correo'), null]
   }
 
   const data = await res.json()
-  return data
+
+  return [null, data]
 }

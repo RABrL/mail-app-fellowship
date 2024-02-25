@@ -223,7 +223,7 @@ class SendMailPostEndpoint(APIView):
                 receiver_email = request.POST.get('receiver_email')
                 subject = request.POST.get('subject')
                 content = request.POST.get('content')
-
+                print(sender_email, receiver_email, subject, content)
                 insert_query = '''
                     INSERT INTO mail (sender_email, receiver_email, subject, content)
                     VALUES (%s, %s, %s, %s);
