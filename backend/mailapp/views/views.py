@@ -219,11 +219,12 @@ class SendMailPostEndpoint(APIView):
         connection = get_connection()
         try:
             with connection.cursor() as cursor:
-                sender_email = request.POST.get('sender_email')
-                receiver_email = request.POST.get('receiver_email')
-                subject = request.POST.get('subject')
-                content = request.POST.get('content')
-                print(sender_email, receiver_email, subject, content)
+
+                sender_email = request.data['body']['sender_email']
+                receiver_email = request.data['body']['receiver_email']
+                subject = request.data['body']['subject']
+                content = request.data['body']['content']
+
                 insert_query = '''
                     INSERT INTO mail (sender_email, receiver_email, subject, content)
                     VALUES (%s, %s, %s, %s);
@@ -268,8 +269,8 @@ class CreateUserPostEndpoint(APIView):
         try:
             with connection.cursor() as cursor:
                 # Get the email and password from the request
-                email = request.POST.get('email')
-                password = request.POST.get('password')
+                email = request.data['body']['email']
+                password = request.data['body']['password']
                 # Check if the user already exists
                 check_query = "SELECT email FROM user_account WHERE email = (%s)"
                 cursor.execute(check_query, (email,))
