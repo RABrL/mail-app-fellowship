@@ -98,12 +98,10 @@ class MailsReceivedUserGetterEndpoint(APIView):
 
         except Exception as e:
             # Handle exceptions appropriately
+            print(e)
             response = {'error': str(e)}
             return JsonResponse(response, status=500)
 
-        finally:
-            # Close the database connection when done
-            connection.close()
 
         # Return the JSON response
         return JsonResponse(response, status=200, safe=False)
@@ -137,6 +135,7 @@ class MailsSentUserGetterEndpoint(APIView):
                 for row in cursor.fetchall():
                     mail_id, receiver_email, subject, sent_date = row
                     response.append({
+                        'mail_id': mail_id,
                         'receiver_email': receiver_email,
                         'subject': subject,
                         'sent_date': sent_date.strftime('%Y-%m-%d %H:%M:%S') if sent_date else None
@@ -146,10 +145,6 @@ class MailsSentUserGetterEndpoint(APIView):
             # Handle exceptions appropriately
             response = {'error': str(e)}
             return JsonResponse(response, status=500)
-
-        finally:
-            # Close the database connection when done
-            connection.close()
 
         # Return the JSON response
         return JsonResponse(response, status=200, safe=False)
@@ -179,6 +174,10 @@ class InformationForMailGetterEndpoint(APIView):
                 '''
                 cursor.execute(get_tables_query, (mail_id,))
 
+                if(cursor.rowcount == 0):
+                    response = {'error': 'Mail with this ID does not exist'}
+                    return JsonResponse(response, status=500)
+
                 # Fetch the results
                 for row in cursor.fetchall():
                     mail_id, sender_email, receiver_email, subject, content, folder_id, sent_date = row
@@ -196,10 +195,6 @@ class InformationForMailGetterEndpoint(APIView):
             # Handle exceptions appropriately
             response = {'error': str(e)}
             return JsonResponse(response, status=500)
-
-        finally:
-            # Close the database connection when done
-            connection.close()
 
         # Return the JSON response
         return JsonResponse(response, status=200)
@@ -244,10 +239,6 @@ class SendMailPostEndpoint(APIView):
             # Handle exceptions appropriately
             response = {'error': str(e)}
             return JsonResponse(response, status=500)
-
-        finally:
-            # Close the database connection when done
-            connection.close()
 
         # Return the JSON response
         return JsonResponse(response, status=200)
@@ -311,10 +302,6 @@ class CreateUserPostEndpoint(APIView):
             response = {'error': str(e)}
             return JsonResponse(response, status=500)
 
-        finally:
-            # Close the database connection when done
-            connection.close()
-
         # Return the JSON response
         return JsonResponse(response, status=201)
     
@@ -372,10 +359,6 @@ class AuthenticationUserGetterEndpoint(APIView):
             # Handle exceptions appropriately
             response = {'error': str(e)}
             return JsonResponse(response, status=500)
-
-        finally:
-            # Close the database connection when done
-            connection.close()
 
         # Return the JSON response
         return JsonResponse(response, status=200)
