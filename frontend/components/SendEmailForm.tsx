@@ -12,7 +12,6 @@ const SendEmailForm = ({ className }: SendEmailFormProps) => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setIsLoading(true)
-
     try {
       const formData = new FormData(event.currentTarget)
       const receiver = formData.get('receiver')?.toString()
@@ -33,6 +32,7 @@ const SendEmailForm = ({ className }: SendEmailFormProps) => {
         subject,
         sender_email: 'juan1010.jerm@gmail.com'
       })
+      event.currentTarget.reset()
     } catch (error) {
       if (error instanceof Error) return alert(error.message)
       return alert('Algo salio mal')
