@@ -10,13 +10,13 @@ export interface InboxCardProps extends Email {
 export function InboxCard(props: InboxCardProps): ReactElement {
   const [cardColor] = useState(tailwindColors[Math.floor(Math.random() * tailwindColors.length)]);
   return (
-    <Link href={`/${props.id}`}>
+    <Link href={`/${props.mail_id}`}>
 
-      <article onClick={() => props.setChoosed(props.id)} className={ `${props.choosed === props.id && 'bg-opacity-95 border-l-4 border-l-button'} bg-secondary cursor-pointer border-b border-b-gray-500 flex text-slate-50  px-8 py-8 items-center ` }>
+      <article onClick={() => props.setChoosed(props.mail_id)} className={ `${props.choosed === props.mail_id && 'bg-opacity-95 border-l-4 border-l-button'} bg-secondary cursor-pointer border-b border-b-gray-500 flex text-slate-50  px-8 py-8 items-center ` }>
 
         <div className={` ${cardColor} flex justify-center items-center rounded-full w-14 h-12`}>
         <h2 className=" text-2xl ">
-          {props.sender_email.slice(0,1)}
+          {props.sender_email?.slice(0,1)}
         </h2>
         </div>
         <div className="w-full  ">

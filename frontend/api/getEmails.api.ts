@@ -1,3 +1,4 @@
+import { Email } from "@/app/types/EmailInterface";
 import axios from "axios";
 
 export const getEmailsByUser = async (userId:number) => {
@@ -9,9 +10,11 @@ export const getEmailsByUser = async (userId:number) => {
 }
 
 
-export const getAnEmail = async (emailId:number) => {
+export const getAnEmail = async (mailId:number): Promise<Email | undefined> => {
   try {
-    return await axios.get(`${process.env.NEXT_PUBLIC_API_ROUTE}mails/received/${emailId}`)
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_ROUTE}mails/information/${mailId}`)
+    if(!res.data) return undefined
+    return res.data
   } catch (error) {
     console.error();
   }
