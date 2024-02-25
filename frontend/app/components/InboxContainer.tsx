@@ -13,12 +13,7 @@ export function InboxContainer(props: InboxContainerProps): ReactElement {
     const fetchEmails = async () => {
       try {
         const res =  await getEmailsByUser(1)
-        const emailsArray = Object.keys(res?.data).map((key) => ({
-            id: key,
-            ...res?.data[key],
-          }));
-        setEmails(emailsArray)
-        console.log(res?.data)
+        console.log(res)
       } catch (error) {
         console.error(error)
       }
