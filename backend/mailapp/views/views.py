@@ -137,6 +137,7 @@ class MailsSentUserGetterEndpoint(APIView):
                 for row in cursor.fetchall():
                     mail_id, receiver_email, subject, sent_date = row
                     response.append({
+                        'mail_id': mail_id,
                         'receiver_email': receiver_email,
                         'subject': subject,
                         'sent_date': sent_date.strftime('%Y-%m-%d %H:%M:%S') if sent_date else None
