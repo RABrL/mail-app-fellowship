@@ -86,14 +86,15 @@ class MailsReceivedUserGetterEndpoint(APIView):
                 cursor.execute(get_tables_query, (user_mail,))
 
                 # Fetch the results
-                response = {}
+                response = []
                 for row in cursor.fetchall():
                     mail_id, sender_email, subject, sent_date = row
-                    response[str(mail_id)] = {
+                    response.append({
+                        'mail_id': mail_id,
                         'sender_email': sender_email,
                         'subject': subject,
                         'sent_date': sent_date.strftime('%Y-%m-%d %H:%M:%S') if sent_date else None
-                    }
+                    })
 
         except Exception as e:
             # Handle exceptions appropriately
@@ -105,9 +106,8 @@ class MailsReceivedUserGetterEndpoint(APIView):
             connection.close()
 
         # Return the JSON response
-        return JsonResponse(response, status=200)
-
-
+        return JsonResponse(response, status=200, safe=False)
+    
 class MailsSentUserGetterEndpoint(APIView):
     def get(self, request, user_mail):
         """
@@ -124,7 +124,6 @@ class MailsSentUserGetterEndpoint(APIView):
                 a JSON object with an error message
                 with HTTP status code 500 (Internal Server Error).
         """
-        response = {}
         connection = get_connection()
         try:
             with connection.cursor() as cursor:
@@ -134,14 +133,14 @@ class MailsSentUserGetterEndpoint(APIView):
                 cursor.execute(get_tables_query, (user_mail,))
 
                 # Fetch the results
-                response = {}
+                response = []
                 for row in cursor.fetchall():
                     mail_id, receiver_email, subject, sent_date = row
-                    response[str(mail_id)] = {
+                    response.append({
                         'receiver_email': receiver_email,
                         'subject': subject,
                         'sent_date': sent_date.strftime('%Y-%m-%d %H:%M:%S') if sent_date else None
-                    }
+                    })
 
         except Exception as e:
             # Handle exceptions appropriately
@@ -153,9 +152,8 @@ class MailsSentUserGetterEndpoint(APIView):
             connection.close()
 
         # Return the JSON response
-        return JsonResponse(response, status=200)
-
-
+        return JsonResponse(response, status=200, safe=False)
+    
 class InformationForMailGetterEndpoint(APIView):
     def get(self, request, mail_id):
         """
@@ -287,7 +285,7 @@ class CreateUserPostEndpoint(APIView):
                 result = cursor.fetchone()
                 if result[0] > 0:
                     # If the user already exists, return an error
-                    return JsonResponse({'error': 'User with this email already exists'}, status=400)
+                    return JsonResponse({'error': 'User with this email already exists'}, status=409)
                 # Generate a random 10 characters salt
                 salt = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
                 # Concatenate salt with password
@@ -318,9 +316,8 @@ class CreateUserPostEndpoint(APIView):
             connection.close()
 
         # Return the JSON response
-        return JsonResponse(response, status=200)
-
-
+        return JsonResponse(response, status=201)
+    
 class AuthenticationUserGetterEndpoint(APIView):
     def get(self, request, email, password):
         """

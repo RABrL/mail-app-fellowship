@@ -12,7 +12,8 @@ const config: Config = {
         principal: '#303052',
         button: '#fe6c91',
         textGray: '#f6f6f6',
-        secondary: '#343458'
+        secondary: '#343458',
+        text: '#0d0d31'
       }
     },
   },
