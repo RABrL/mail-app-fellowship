@@ -1,18 +1,13 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
-from dotenv import load_dotenv
+from django.contrib.auth.hashers import make_password, check_password
+from mailapp.models import Email, UserMail
 from django.http import JsonResponse
 import boto3
 import psycopg2
 import os
 import threading
-import random
-import string
-import hashlib
-
 thread_local = threading.local()
-
-dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env')
-load_dotenv(dotenv_path)
 
 ENDPOINT = "mailapp-database-instance.c1woi26qsnpj.us-east-1.rds.amazonaws.com"
 DATABASE_ID = "mailapp-database-instance"
@@ -60,305 +55,146 @@ def get_connection():
     return thread_local.connection
 
 
-class MailsReceivedUserGetterEndpoint(APIView):
+class MailsReceivedUser(APIView):
+
+    def get(self, request, user_mail) -> JsonResponse:
+        """
+        :param user_mail:
+        :param request:
+        """
+        try:
+            response = []
+            user = get_object_or_404(UserMail, email=user_mail)
+            user_emails = Email.objects.filter(recipient_email=user)
+            if not user_emails:
+                return JsonResponse({'error': 'No emails found'}, status=404)
+            for email in user_emails:
+                response.append({
+                    'id': email.id,
+                    'sender_email': email.sender_email.email,
+                    'recipient_email': email.recipient_email.email,
+                    'subject': email.subject,
+                    'message': email.message,
+                    'date': email.date
+                })
+            return JsonResponse(response, status=200, safe=False)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+
+
+class MailsSentUser(APIView):
+
     def get(self, request, user_mail):
         """
-        Handle GET requests to get all the mails received by a user
-
-        :param request: The request object
-        :param user_mail: The email of the user
-
-        :return: A JSON response
-            - If successful:
-                a JSON object with the mail IDs as keys and the mail details as values
-                with HTTP status code 200 (OK).
-            - If unsuccessful:
-                a JSON object with an error message
-                with HTTP status code 500 (Internal Server Error).
+        :param request:
+        :param user_mail:
         """
-
-        connection = get_connection()
         try:
-            with connection.cursor() as cursor:
-                get_tables_query = '''
-                    SELECT mail_id, sender_email, subject, sent_date FROM mail WHERE receiver_email =  (%s);
-                '''
-                cursor.execute(get_tables_query, (user_mail,))
-
-                # Fetch the results
-                response = []
-                for row in cursor.fetchall():
-                    mail_id, sender_email, subject, sent_date = row
-                    response.append({
-                        'mail_id': mail_id,
-                        'sender_email': sender_email,
-                        'subject': subject,
-                        'sent_date': sent_date.strftime('%Y-%m-%d %H:%M:%S') if sent_date else None
-                    })
-
+            response = []
+            user = get_object_or_404(UserMail, email=user_mail)
+            user_emails = Email.objects.filter(sender_email=user)
+            if not user_emails:
+                return JsonResponse({'error': 'No emails found'}, status=404)
+            for email in user_emails:
+                response.append({
+                    'id': email.id,
+                    'sender_email': email.sender_email.email,
+                    'recipient_email': email.recipient_email.email,
+                    'subject': email.subject,
+                    'message': email.message,
+                    'date': email.date
+                })
+            return JsonResponse(response, status=200, safe=False)
         except Exception as e:
-            # Handle exceptions appropriately
-            print(e)
-            response = {'error': str(e)}
-            return JsonResponse(response, status=500)
+            return JsonResponse({'error': str(e)}, status=500)
 
 
-        # Return the JSON response
-        return JsonResponse(response, status=200, safe=False)
-    
-class MailsSentUserGetterEndpoint(APIView):
-    def get(self, request, user_mail):
-        """
-        Handle GET requests to get all the mails sent by a user
+class InformationForMail(APIView):
 
-        :param request: The request object
-        :param user_mail: The email of the user
-
-        :return: A JSON response
-            - If successful:
-                a JSON object with the mail IDs as keys and the mail details as values
-                with HTTP status code 200 (OK).
-            - If unsuccessful:
-                a JSON object with an error message
-                with HTTP status code 500 (Internal Server Error).
-        """
-        connection = get_connection()
-        try:
-            with connection.cursor() as cursor:
-                get_tables_query = '''
-                    SELECT mail_id, receiver_email, subject, sent_date FROM mail WHERE sender_email =  (%s);
-                '''
-                cursor.execute(get_tables_query, (user_mail,))
-
-                # Fetch the results
-                response = []
-                for row in cursor.fetchall():
-                    mail_id, receiver_email, subject, sent_date = row
-                    response.append({
-                        'mail_id': mail_id,
-                        'receiver_email': receiver_email,
-                        'subject': subject,
-                        'sent_date': sent_date.strftime('%Y-%m-%d %H:%M:%S') if sent_date else None
-                    })
-
-        except Exception as e:
-            # Handle exceptions appropriately
-            response = {'error': str(e)}
-            return JsonResponse(response, status=500)
-
-        # Return the JSON response
-        return JsonResponse(response, status=200, safe=False)
-    
-class InformationForMailGetterEndpoint(APIView):
     def get(self, request, mail_id):
         """
-        Handle GET requests to get the information for a mail
-
-        :param request: The request object
-        :param mail_id: The ID of the mail
-
-        :return: A JSON response
-            - If successful:
-                a JSON object with the mail details
-                with HTTP status code 200 (OK).
-            - If unsuccessful:
-                a JSON object with an error message
-                with HTTP status code 500 (Internal Server Error).
+        :param request:
+        :param mail_id:
         """
-        response = {}
-        connection = get_connection()
         try:
-            with connection.cursor() as cursor:
-                get_tables_query = '''
-                    SELECT * FROM mail WHERE mail_id = (%s);
-                '''
-                cursor.execute(get_tables_query, (mail_id,))
-
-                if(cursor.rowcount == 0):
-                    response = {'error': 'Mail with this ID does not exist'}
-                    return JsonResponse(response, status=500)
-
-                # Fetch the results
-                for row in cursor.fetchall():
-                    mail_id, sender_email, receiver_email, subject, content, folder_id, sent_date = row
-                    response = {
-                        'mail_id': mail_id,
-                        'sender_email': sender_email,
-                        'receiver_email': receiver_email,
-                        'subject': subject,
-                        'content': content,
-                        'folder_id': folder_id,
-                        'sent_date': sent_date.strftime('%Y-%m-%d %H:%M:%S') if sent_date else None,
-                    }
-
+            email_data = Email.objects.filter(id=mail_id).first()
+            if email_data:
+                response = {
+                    'mail_id': email_data.id,
+                    'sender_email': email_data.sender_email.email,
+                    'recipient_email': email_data.recipient_email.email,
+                    'subject': email_data.subject,
+                    'message': email_data.message,
+                    'date': email_data.date
+                }
+                return JsonResponse(response, status=200, safe=False)
+            else:
+                return JsonResponse({'error': 'Email does not exist'}, status=404)
         except Exception as e:
-            # Handle exceptions appropriately
-            response = {'error': str(e)}
-            return JsonResponse(response, status=500)
-
-        # Return the JSON response
-        return JsonResponse(response, status=200)
+            return JsonResponse({'error': str(e)}, status=500)
 
 
-class SendMailPostEndpoint(APIView):
+class SendMail(APIView):
+
     def post(self, request):
         """
-        Handle POST requests to send a mail
-
-        :param request: The request object
-
-        :return: A JSON response
-            - If successful:
-                a JSON object with a success message
-                with HTTP status code 200 (OK).
-            - If unsuccessful:
-                a JSON object with an error message
-                with HTTP status code 500 (Internal Server Error).
-       """
-        response = {}
-        connection = get_connection()
-        try:
-            with connection.cursor() as cursor:
-
-                sender_email = request.data['sender_email']
-                receiver_email = request.data['receiver_email']
-                subject = request.data['subject']
-                content = request.data['content']
-                insert_query = '''
-                    INSERT INTO mail (sender_email, receiver_email, subject, content)
-                    VALUES (%s, %s, %s, %s);
-                '''
-                cursor.execute(insert_query, (sender_email, receiver_email, subject, content))
-
-                connection.commit()
-
-                # response
-                response = {'message': 'Mail sent successfully'}
-
-        except Exception as e:
-            # Handle exceptions appropriately
-            response = {'error': str(e)}
-            return JsonResponse(response, status=500)
-
-        # Return the JSON response
-        return JsonResponse(response, status=200)
-
-
-class CreateUserPostEndpoint(APIView):
-    def post(self, request):
+        :param request:
+        :return:
         """
-        Handle POST requests to create a user
-
-        :param request: The request object
-
-        :return: A JSON response
-            - If successful:
-                a JSON object with a success message
-                with HTTP status code 200 (OK).
-            - If unsuccessful:
-                - If the user already exists:
-                    a JSON object with an error message
-                    with HTTP status code 400 (Bad Request).
-                - If there is an error:
-                    a JSON object with an error message
-                    with HTTP status code 500 (Internal Server Error).
-        """
-        response = {}
-        connection = get_connection()
         try:
-            with connection.cursor() as cursor:
-                # Get the email and password from the request
-                email = request.data['body']['email']
-                password = request.data['body']['password']
-                # Check if the user already exists
-                check_query = "SELECT email FROM user_account WHERE email = (%s)"
-                cursor.execute(check_query, (email,))
-                result = cursor.fetchone()
-                if result[0] == email:
-                    # If the user already exists, return an error
-                    return JsonResponse({'error': 'User with this email already exists'}, status=409)
-                # Generate a random 10 characters salt
-                salt = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
-                # Concatenate salt with password
-                salted_password = salt + password
-                # Hash the salted password
-                hashed_password = hashlib.sha256(salted_password.encode()).hexdigest()
-                # Truncate hashed password to max 50 characters
-                hashed_password = hashed_password[:50]
-                # Insert the user into the database
-                insert_query = '''
-                    INSERT INTO user_account (email, password, password_salt)
-                    VALUES ((%s), (%s), (%s));
-                '''
-                cursor.execute(insert_query, (email, hashed_password, salt))
+            sender_email = request.data['sender_email']
+            receiver_email = request.data['receiver_email']
+            subject = request.data['subject']
+            message = request.data['content']
 
-                connection.commit()
+            # Ensure both sender and receiver emails exist
+            sender_user = get_object_or_404(UserMail, email=sender_email)
+            receiver_user = get_object_or_404(UserMail, email=receiver_email)
 
-                # response
-                response = {'message': 'User created successfully'}
+            Email.objects.create(
+                sender_email=sender_user,
+                recipient_email=receiver_user,
+                subject=subject,
+                message=message
+            )
+            return JsonResponse({'message': 'Email sent successfully'}, status=201)
 
+        except UserMail.DoesNotExist:
+            return JsonResponse({'error': 'User does not exist'}, status=404)
         except Exception as e:
-            # Handle exceptions appropriately
-            response = {'error': str(e)}
-            return JsonResponse(response, status=500)
+            return JsonResponse({'error': str(e)}, status=500)
 
-        # Return the JSON response
-        return JsonResponse(response, status=201)
-    
+
+class CreateUser(APIView):
+
+    def post(self, request) -> JsonResponse:
+        """
+        :param request:
+        """
+        try:
+            email = request.data['email']
+            password = request.data['password']
+            user, created = UserMail.objects.get_or_create(email=email, password=make_password(password))
+            if created:
+                return JsonResponse({'message': 'User created successfully'}, status=201)
+            else:
+                return JsonResponse({'error': 'User with this email already exists'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+
+
 class AuthenticationUserGetterEndpoint(APIView):
     def get(self, request, email, password):
         """
-        Handle GET requests to authenticate a user
-
-        :param request: The request object
-        :param email: The email of the user
-        :param password: The password of the user
-
-        :return: A JSON response
-            - If successful:
-                a JSON object with a success message
-                with HTTP status code 200 (OK).
-            - If unsuccessful:
-                - If the user does not exist:
-                    a JSON object with an error message
-                    with HTTP status code 400 (Bad Request).
-                - If the password is incorrect:
-                    a JSON object with an error message
-                    with HTTP status code 401 (Unauthorized).
-                - If there is an error:
-                    a JSON object with an error message
-                    with HTTP status code 500 (Internal Server Error).
+        :param request:
+        :param email:
+        :param password:
         """
-        response = {}
-        connection = get_connection()
         try:
-            with connection.cursor() as cursor:
-                # Check if the user exists
-                check_query = "SELECT password, password_salt FROM user_account WHERE email = (%s)"
-                cursor.execute(check_query, (email,))
-                result = cursor.fetchone()
-                if not result:
-                    # If the user does not exist, return an error
-                    return JsonResponse({'error': 'User with this email does not exist'}, status=400)
-                # Get the hashed password and salt
-                hashed_password, salt = result
-                # Concatenate salt with password
-                salted_password = salt + password
-                # Hash the salted password
-                hashed_password_to_check = hashlib.sha256(salted_password.encode()).hexdigest()
-                # Truncate hashed password to max 50 characters
-                hashed_password_to_check = hashed_password_to_check[:50]
-                # Check if the password is correct
-                if hashed_password_to_check != hashed_password:
-                    # If the password is incorrect, return an error
-                    return JsonResponse({'error': 'Incorrect password'}, status=401)
-                # If the user exists and the password is correct, return a success message
-                response = {'message': 'User authenticated successfully'}
-
+            user = get_object_or_404(UserMail, email=email)
+            if check_password(password, user.password):
+                return JsonResponse({'message': 'User authenticated successfully'}, status=200)
+            else:
+                return JsonResponse({'error': 'Incorrect password'}, status=401)
         except Exception as e:
-            # Handle exceptions appropriately
-            response = {'error': str(e)}
-            return JsonResponse(response, status=500)
-
-        # Return the JSON response
-        return JsonResponse(response, status=200)
+            return JsonResponse({'error': 'Incorrect password or email'}, status=500)

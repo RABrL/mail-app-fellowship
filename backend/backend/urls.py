@@ -20,7 +20,5 @@ from mailapp.views.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('mails/', include('mailapp.urls')),
-    path('user/', CreateUserPostEndpoint.as_view()),
-    path('user/authentication/<str:email>/<str:password>', AuthenticationUserGetterEndpoint.as_view()),
+    path('mail/', include('mailapp.urls')),
 ]
