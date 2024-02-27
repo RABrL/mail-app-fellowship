@@ -6,7 +6,7 @@ import { getEmailsByUser } from '@/services/getEmails'
 
 export function InboxContainer(): ReactElement {
   const [emails, setEmails] = useState<Email[]>([])
-
+  const [choosed, setChoosed] = useState(0)
   useEffect(() => {
     const fetchEmails = async () => {
       try {
@@ -22,9 +22,9 @@ export function InboxContainer(): ReactElement {
   }, [])
 
   return (
-    <section className="w-1/4 min-w-96 overflow-y-scroll">
+    <section className="w-1/4 min-w-96   overflow-y-scroll">
       {emails.map((email, index) => (
-        <InboxCard key={email.mail_id} {...email} />
+        <InboxCard key={email.mail_id} {...email}  choosed={choosed} setChoosed={setChoosed}/>
       ))}
     </section>
   )
