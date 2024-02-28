@@ -1,12 +1,13 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from django.contrib.auth.hashers import make_password, check_password
-from mailapp.models import Email, UserMail
+from mailapp.models import Email, UserMail, Folder
 from django.http import JsonResponse
 import boto3
 import psycopg2
 import os
 import threading
+
 thread_local = threading.local()
 
 ENDPOINT = "mailapp-database-instance.c1woi26qsnpj.us-east-1.rds.amazonaws.com"
@@ -172,7 +173,7 @@ class CreateUser(APIView):
         :param request:
         """
         try:
-            email = request.data['email']
+            email = request.data['email'].strip().lower()
             password = request.data['password']
             user, created = UserMail.objects.get_or_create(email=email, password=make_password(password))
             if created:
@@ -198,3 +199,76 @@ class AuthenticationUserGetterEndpoint(APIView):
                 return JsonResponse({'error': 'Incorrect password'}, status=401)
         except Exception as e:
             return JsonResponse({'error': 'Incorrect password or email'}, status=500)
+
+
+class CreateFolder(APIView):
+
+    def post(self, request):
+        """
+        :param request:
+        """
+        try:
+            folder_name = request.data['folder_name'].strip().lower()
+            user_email = request.data['user_email']
+            user = get_object_or_404(UserMail, email=user_email)
+            if Folder.objects.filter(name=folder_name, user=user).exists():
+                return JsonResponse({'error': 'Folder with this name already exists'}, status=400)
+            Folder.objects.create(name=folder_name, user=user)
+            return JsonResponse({'message': 'Folder created successfully'}, status=201)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+
+
+class SaveEmailsInFolder(APIView):
+
+    def post(self, request):
+        """
+            :param request:
+            """
+        try:
+            emails = request.data['emails']
+            user_email = request.data['user_email']
+            folder_name = request.data['folder_name']
+            user = get_object_or_404(UserMail, email=user_email)
+            folder_obj = Folder.objects.filter(name=folder_name, user=user).first()
+            if not folder_obj:
+                return JsonResponse({'error': 'Folder with this name does not exist'}, status=404)
+            for email in emails:
+                email_obj = get_object_or_404(Email, id=email['id'])
+                if not email_obj.folder:
+                    email_obj.folder = folder_obj
+                    email_obj.save()
+            return JsonResponse({'message': 'Emails saved in folder successfully'}, status=201)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+
+
+class GetEmailsFolder(APIView):
+
+    def get(self, request, folder_name, user_email):
+        """
+        :param user_email:
+        :param request:
+        :param folder_name:
+        """
+        try:
+            user = get_object_or_404(UserMail, email=user_email)
+            folder_obj = Folder.objects.filter(name=folder_name, user=user).first()
+            if not folder_obj:
+                return JsonResponse({'error': 'Folder with this name does not exist'}, status=404)
+            emails = Email.objects.filter(folder=folder_obj)
+            response = []
+            for email in emails:
+                response.append({
+                    'id': email.id,
+                    'sender_email': email.sender_email.email,
+                    'recipient_email': email.recipient_email.email,
+                    'subject': email.subject,
+                    'message': email.message,
+                    'date': email.date,
+                    'folder': email.folder.name
+                })
+            return JsonResponse(response, status=200, safe=False)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    pass
