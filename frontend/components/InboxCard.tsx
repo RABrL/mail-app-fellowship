@@ -6,8 +6,6 @@ import { Email } from '@/types/EmailInterface'
 import { tailwindColors } from '@/utils/randomColors'
 
 export interface InboxCardProps extends Email {
-  choosed: number,
-  setChoosed: React.Dispatch<React.SetStateAction<number>>
 }
 export function InboxCard(props: InboxCardProps) {
   // busca el parametro de la ruta de la url
@@ -24,7 +22,6 @@ export function InboxCard(props: InboxCardProps) {
   return (
     <Link href={`/${props.mail_id}`}>
       <article
-        onClick={() => props.setChoosed(props.mail_id)}
         className={`${
           id === props.mail_id && 'bg-opacity-95 border-l-4 border-l-button'
         } bg-secondary cursor-pointer border-b border-b-gray-500 border-l border-l-gray-500 flex text-slate-50  px-8 py-8 items-center `}
