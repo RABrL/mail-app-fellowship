@@ -18,7 +18,7 @@ export async function sendEmail(formData: FormData) {
   if (!emailRegex.test(receiver.toString()))
     return [new Error('El correo no es valido'), null]
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/mails/`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/mail/`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
