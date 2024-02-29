@@ -94,9 +94,10 @@ class SendMailView(APIView):
         try:
             sender_email = request.data['sender_email']
             receiver_email = request.data['receiver_email']
+            if not receiver_email:
+                return JsonResponse({'error': 'Sender and receiver emails are required'}, status=400)
             subject = request.data['subject']
             message = request.data['content']
-
             # Ensure both sender and receiver emails exist
             sender_user = get_object_or_404(UserMail, email=sender_email)
             receiver_user = get_object_or_404(UserMail, email=receiver_email)
