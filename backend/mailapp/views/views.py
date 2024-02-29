@@ -3,60 +3,9 @@ from rest_framework.views import APIView
 from django.contrib.auth.hashers import make_password, check_password
 from mailapp.models import Email, UserMail, Folder
 from django.http import JsonResponse
-import boto3
-import psycopg2
-import os
-import threading
-
-thread_local = threading.local()
-
-ENDPOINT = "mailapp-database-instance.c1woi26qsnpj.us-east-1.rds.amazonaws.com"
-DATABASE_ID = "mailapp-database-instance"
-PORT = 5432
-USER = "postgres"
-ACCESS_KEY = os.environ.get("AWS_ACCESS_KEY_ID")
-SECRET_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
-PASSWORD = os.environ.get("AWS_DATABASE_PASSWORD")
-REGION = "us-east-1"
-DBNAME = "mail_db"
 
 
-def get_connection():
-    """
-    Get a connection to the RDS PostgreSQL database.
-
-    :return: The connection to the RDS PostgreSQL database.
-    """
-    # Retrieve or create a client for the current thread
-    if not hasattr(thread_local, "connection"):
-        # Set up the boto3 client
-        rds_client = boto3.client(
-            'rds',
-            aws_access_key_id=ACCESS_KEY,
-            aws_secret_access_key=SECRET_KEY,
-            region_name=REGION,
-        )
-
-        # Get the RDS instance details
-        response = rds_client.describe_db_instances(DBInstanceIdentifier=DATABASE_ID)
-        rds_endpoint = response['DBInstances'][0]['Endpoint']['Address']
-
-        # Connect to the RDS PostgreSQL database using psycopg2
-        connection = psycopg2.connect(
-            host=rds_endpoint,
-            user=USER,
-            password=PASSWORD,
-            database=DBNAME,
-            port=PORT
-        )
-
-        thread_local.client = rds_client
-        thread_local.connection = connection
-    # Return the client
-    return thread_local.connection
-
-
-class MailsReceivedUser(APIView):
+class MailsListView(APIView):
 
     def get(self, request, user_mail) -> JsonResponse:
         """
@@ -83,7 +32,7 @@ class MailsReceivedUser(APIView):
             return JsonResponse({'error': str(e)}, status=500)
 
 
-class MailsSentUser(APIView):
+class MailsSentView(APIView):
 
     def get(self, request, user_mail):
         """
@@ -110,7 +59,7 @@ class MailsSentUser(APIView):
             return JsonResponse({'error': str(e)}, status=500)
 
 
-class InformationForMail(APIView):
+class MailInfoView(APIView):
 
     def get(self, request, mail_id):
         """
@@ -135,7 +84,7 @@ class InformationForMail(APIView):
             return JsonResponse({'error': str(e)}, status=500)
 
 
-class SendMail(APIView):
+class SendMailView(APIView):
 
     def post(self, request):
         """
@@ -166,7 +115,7 @@ class SendMail(APIView):
             return JsonResponse({'error': str(e)}, status=500)
 
 
-class CreateUser(APIView):
+class CreateUserView(APIView):
 
     def post(self, request) -> JsonResponse:
         """
@@ -174,7 +123,7 @@ class CreateUser(APIView):
         """
         try:
             email = request.data['email'].strip().lower()
-            password = request.data['password']
+            password = request.data['password'].strip()
             user, created = UserMail.objects.get_or_create(email=email, password=make_password(password))
             if created:
                 return JsonResponse({'message': 'User created successfully'}, status=201)
@@ -184,24 +133,28 @@ class CreateUser(APIView):
             return JsonResponse({'error': str(e)}, status=500)
 
 
-class AuthenticationUserGetterEndpoint(APIView):
-    def get(self, request, email, password):
+class AuthenticationUserView(APIView):
+    def post(self, request):
         """
         :param request:
         :param email:
         :param password:
         """
         try:
-            user = get_object_or_404(UserMail, email=email)
+            email = request.data['email']
+            password = request.data['password']
+            user = UserMail.objects.get(email=email)
             if check_password(password, user.password):
                 return JsonResponse({'message': 'User authenticated successfully'}, status=200)
             else:
                 return JsonResponse({'error': 'Incorrect password'}, status=401)
+        except UserMail.DoesNotExist:
+            return JsonResponse({'error': 'User not found'}, status=404)
         except Exception as e:
             return JsonResponse({'error': 'Incorrect password or email'}, status=500)
 
 
-class CreateFolder(APIView):
+class CreateFolderView(APIView):
 
     def post(self, request):
         """
@@ -219,7 +172,7 @@ class CreateFolder(APIView):
             return JsonResponse({'error': str(e)}, status=500)
 
 
-class SaveEmailsInFolder(APIView):
+class SaveEmailsView(APIView):
 
     def post(self, request):
         """
@@ -243,7 +196,7 @@ class SaveEmailsInFolder(APIView):
             return JsonResponse({'error': str(e)}, status=500)
 
 
-class GetEmailsFolder(APIView):
+class EmailsFolderView(APIView):
 
     def get(self, request, folder_name, user_email):
         """
@@ -271,4 +224,3 @@ class GetEmailsFolder(APIView):
             return JsonResponse(response, status=200, safe=False)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
-    pass
