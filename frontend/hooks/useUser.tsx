@@ -14,14 +14,20 @@ interface Props {
 export const MyUserContextProvider = (props: Props) => {
   const [user, setUser] = useState<User | null>(null)
 
+  let data: string | null = null
+
+  if (typeof window !== 'undefined') {
+    data = localStorage.getItem('user')
+  }
+
   useEffect(() => {
-    const data = localStorage.getItem('user')
+    data = localStorage.getItem('user')
     if (data) {
       setUser(JSON.parse(data))
       return
     }
     setUser(null)
-  }, [localStorage.getItem('user')])
+  }, [data])
 
   const value = { user }
 
