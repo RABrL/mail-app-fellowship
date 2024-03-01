@@ -1,13 +1,15 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+
 import { NavBar } from '@/components/NavBar'
-import './globals.css'
 import { InboxContainer } from '@/components/InboxContainer'
 import FoldersSection from '@/components/FoldersSection'
 import ToasterProvider from '@/providers/ToasterProvider'
 import ModalProvider from '@/providers/ModalProvider'
 import UserProvider from '@/providers/UserProvider'
+
+import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -30,7 +32,9 @@ export default function RootLayout({
           <ModalProvider />
           <main className="flex relative h-screen max-h-screen">
             <FoldersSection />
-            <InboxContainer />
+            <Suspense>
+              <InboxContainer />
+            </Suspense>
             {children}
           </main>
         </UserProvider>
