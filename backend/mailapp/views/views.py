@@ -1,8 +1,11 @@
+from django.contrib.auth.hashers import make_password, check_password
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
-from django.contrib.auth.hashers import make_password, check_password
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from mailapp.models import Email, UserMail, Folder
 from django.http import JsonResponse
+from django.contrib.auth import login
 
 
 class MailsListView(APIView):
@@ -123,15 +126,25 @@ class CreateUserView(APIView):
         :param request:
         """
         try:
-            email = request.data['email'].strip().lower()
-            password = request.data['password'].strip()
-            user, created = UserMail.objects.get_or_create(email=email, password=make_password(password))
-            if created:
-                return JsonResponse({'message': 'User created successfully'}, status=201)
-            else:
-                return JsonResponse({'error': 'User with this email already exists'}, status=400)
+            email = request.data['email']
+            password = request.data['password']
+            first_name = request.data['email']
+
+            # Validate email format
+            try:
+                validate_email(email)
+            except ValidationError:
+                return JsonResponse({'error': 'Invalid email format'}, status=400)
+
+            # Create user using create_user method of the manager
+            UserMail.objects.create_user(email=email, username=email, first_name=first_name, password=password)
+            return JsonResponse({'message': 'User created successfully'}, status=201)
+
+        except ValidationError as ve:
+            return JsonResponse({'error': str(ve)}, status=400)
+
         except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
+            return JsonResponse({'error': f'Unexpected error: {str(e)}'}, status=500)
 
 
 class AuthenticationUserView(APIView):
@@ -144,11 +157,12 @@ class AuthenticationUserView(APIView):
         try:
             email = request.data['email']
             password = request.data['password']
-            user = UserMail.objects.get(email=email)
+            user = get_object_or_404(UserMail, email=email)
             if check_password(password, user.password):
+                login(request, user)
                 return JsonResponse({'message': 'User authenticated successfully'}, status=200)
             else:
-                return JsonResponse({'error': 'Incorrect password'}, status=401)
+                return JsonResponse({'error': 'Incorrect password or email'}, status=400)
         except UserMail.DoesNotExist:
             return JsonResponse({'error': 'User not found'}, status=404)
         except Exception as e:
