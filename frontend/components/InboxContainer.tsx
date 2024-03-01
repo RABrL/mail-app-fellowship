@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, type ReactElement, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSearchParams, usePathname } from 'next/navigation'
 
 import { getEmailsByUser } from '@/services/getEmails'
@@ -19,7 +19,7 @@ export function InboxContainer() {
   const searchParams = useSearchParams()
 
   useEffect(() => {
-    if(!user) return
+    if (!user) return
     const fetchEmails = async () => {
       try {
         if (pathname === '/') {
@@ -42,7 +42,7 @@ export function InboxContainer() {
       }
     }
     fetchEmails()
-  }, [pathname,user])
+  }, [pathname, user])
 
   useEffect(() => {
     const searchTerm = searchParams.get('search')?.toLowerCase() || ''
@@ -57,7 +57,7 @@ export function InboxContainer() {
 
   if (!user) {
     return (
-      <section className="bg-principal border-l border-l-gray-500 text-white pt-3 px-3">
+      <section className="bg-principal border-l border-l-gray-500 text-white flex items-center justify-center min-w-96">
         <p>You need to be logged in to see your emails</p>
       </section>
     )
