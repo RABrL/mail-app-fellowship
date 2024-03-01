@@ -1,12 +1,13 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
 
-import { InputForm } from './SendEmailForm'
 import { loginUser } from '@/services/loginUser'
 import { createUser } from '@/services/createUser'
-import { toast } from 'sonner'
 import useModal from '@/hooks/useModalStore'
+
+import { InputForm } from './SendEmailForm'
 
 interface AuthFormProps {
   isLogin?: boolean
@@ -15,9 +16,13 @@ interface AuthFormProps {
 
 const AuthForm = ({ isLogin, className }: AuthFormProps) => {
   const [isLoading, setIsLoading] = useState(false)
+  const [isLoginState, setIsLoginState] = useState(isLogin)
 
-  const buttonText = isLogin ? 'Login' : 'Register'
+  const onOpen = useModal((state) => state.onOpen)
+  const onClose = useModal((state) => state.onClose)
 
+  const buttonText = isLoginState ? 'Login' : 'Register'
+  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsLoading(true)
@@ -25,15 +30,15 @@ const AuthForm = ({ isLogin, className }: AuthFormProps) => {
       const form = e.currentTarget
       const formData = new FormData(form)
 
-      const [error, _] = isLogin
+      const [error, data] = isLoginState
         ? await loginUser(formData)
         : await createUser(formData)
 
       if (error) throw error
 
-      isLogin
-        ? toast.success('Login succesfully')
-        : toast.success('User created succesfully')
+      isLoginState
+        ? toast.success(`Welcome back ${data.user}`)
+        : toast.success('The user has been created. Now you can login.')
       form.reset()
     } catch (error) {
       if (error instanceof Error) return toast.error(error.message)
@@ -43,19 +48,65 @@ const AuthForm = ({ isLogin, className }: AuthFormProps) => {
     }
   }
 
+  const onClick = () => {
+    setIsLoginState(!isLoginState)
+    onClose()
+    onOpen(isLoginState ? 'signUp' : 'signIn')
+  }
   return (
     <form
       onSubmit={handleSubmit}
-      className={`${className ?? ''} flex flex-col w-full gap-2`}
+      className={`${className ?? ''} flex flex-col w-full gap-3`}
     >
-      <InputForm
-        type="text"
-        name="email"
-        id="email"
-        className="h-12 border-b w-full outline-none text-sm"
-        placeholder="pepito@example.com"
-      />
-      <InputForm name="password" placeholder="*******" />
+      <div>
+        <label htmlFor="email" className="text-sm font-semibold">
+          Email
+        </label>
+        <InputForm
+          type="text"
+          name="email"
+          id="email"
+          placeholder="pepito@example.com"
+        />
+      </div>
+      <div>
+        <label htmlFor="password" className="text-sm font-semibold">
+          Password
+        </label>
+        <InputForm type="password" name="password" placeholder="*******" />
+      </div>
+      {!isLoginState && (
+        <div>
+          <label htmlFor="confirmPassword" className="text-sm font-semibold">
+            Confirm Password
+          </label>
+          <InputForm
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            placeholder="*******"
+          />
+        </div>
+      )}
+      <div className="mx-auto text-xs text-neutral-500">
+        {isLoginState ? (
+          <button
+            type="button"
+            onClick={onClick}
+            className="underline cursor-pointer hover:text-[#0F6CBD]"
+          >
+            Don&apos;t have an account? Sign up
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={onClick}
+            className="underline cursor-pointer hover:text-[#0F6CBD]"
+          >
+            Already have an account? Sign in
+          </button>
+        )}
+      </div>
       <button
         type="submit"
         disabled={isLoading}
