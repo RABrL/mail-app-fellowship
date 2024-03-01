@@ -11,7 +11,8 @@ class UserMailTestCase(APITestCase):
         url = reverse('create_user')
         data = {
             "email": "juan1010.jerm@gmail.com",
-            "password": "somePassword"
+            "password": "somePassword",
+            "first_name": "juan"
         }
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -19,7 +20,8 @@ class UserMailTestCase(APITestCase):
 
         data = {
             "email": "camilo2020@gmail.com",
-            "password": "somePassword1"
+            "password": "somePassword1",
+            "first_name": "camilo"
         }
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -31,8 +33,10 @@ class EmailTestCase(APITestCase):
         """
         Create two users
         """
-        self.first_user = UserMail.objects.create(email="juan1010.jerm@gmail.com", password="somePassword")
-        self.second_user = UserMail.objects.create(email="camilo2020@gmail.com", password="somePassword1")
+        self.first_user = UserMail.objects.create_user(email="juan1010.jerm@gmail.com", username="juan1010",
+                                                      first_name="juan", password="somePassword")
+        self.second_user = UserMail.objects.create_user(email="camilo2020@gmail.com", username="camilo2020",
+                                                        first_name="camilo", password="somePassword1")
 
     def test_send_email(self):
         url = reverse('send_mail')
@@ -54,8 +58,10 @@ class EmailReceiveTestCase(APITestCase):
         """
         Create two users and an email
         """
-        self.first_user = UserMail.objects.create(email="juan1010.jerm@gmail.com", password="somePassword")
-        self.second_user = UserMail.objects.create(email="camilo2020@gmail.com", password="somePassword1")
+        self.first_user = UserMail.objects.create_user(email="juan1010.jerm@gmail.com", username="juan1010",
+                                                       first_name="juan",password="somePassword")
+        self.second_user = UserMail.objects.create_user(email="camilo2020@gmail.com", username="camilo2020",
+                                                        first_name="camilo", password="somePassword1")
         self.email = Email.objects.create(sender_email=self.first_user, recipient_email=self.second_user,
                                           subject="COMUNICADO",
                                           message="Hola reciba un cordial saludo "
@@ -82,19 +88,25 @@ class UserAuthenticationTestCase(APITestCase):
         """
         Create a user
         """
-        url = reverse('create_user')
-        data = {
-            "email": "julian2003@gmail.com",
-            "password": "somePassword"
-        }
-        response = self.client.post(url, data, format='json')
+        self.first_user = UserMail.objects.create_user(email="juan1010.jerm@gmail.com", username="juan1010",
+                                                       first_name="juan", password="somePassword")
 
     def test_authentication_user(self):
         data = {
-            "email": "julian2003@gmail.com",
+            "email": "juan1010.jerm@gmail.com",
             "password": "somePassword"
         }
         url = reverse('authentication_user')
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()['message'], 'User authenticated successfully')
+
+    def test_authentication_user_wrong_password(self):
+        data = {
+            "email": "juan1010.jerm@gmail.com",
+            "password": "somePassword1"
+        }
+        url = reverse('authentication_user')
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.json()['error'], 'Incorrect password or email')
