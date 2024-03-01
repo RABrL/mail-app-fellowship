@@ -5,7 +5,9 @@ import { NavBar } from '@/components/NavBar'
 import './globals.css'
 import { InboxContainer } from '@/components/InboxContainer'
 import FoldersSection from '@/components/FoldersSection'
-import Toaster from '@/components/Toaster'
+import ToasterProvider from '@/providers/ToasterProvider'
+import ModalProvider from '@/providers/ModalProvider'
+import UserProvider from '@/providers/UserProvider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -15,23 +17,23 @@ export const metadata: Metadata = {
 }
 
 export default function RootLayout({
-  children,
-  modal
+  children
 }: Readonly<{
-  modal: React.ReactNode
   children: React.ReactNode
 }>) {
   return (
     <html lang="en">
       <body className={inter.className}>
-          <NavBar/>
-        <main className="relative flex h-screen max-h-screen">
-          {modal}
-          <FoldersSection />
-          <InboxContainer />
-          {children}
-          <Toaster />
-        </main>
+        <ToasterProvider />
+        <UserProvider>
+          <NavBar />
+          <ModalProvider />
+          <main className="flex relative h-screen max-h-screen">
+            <FoldersSection />
+            <InboxContainer />
+            {children}
+          </main>
+        </UserProvider>
       </body>
     </html>
   )

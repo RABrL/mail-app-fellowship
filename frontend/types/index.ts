@@ -6,3 +6,7 @@ export interface Email {
   receiver_email: string
   message: string | null
 }
+
+export interface User {
+  email: string
+}
