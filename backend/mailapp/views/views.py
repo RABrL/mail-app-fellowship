@@ -128,7 +128,6 @@ class CreateUserView(APIView):
         try:
             email = request.data['email']
             password = request.data['password']
-            first_name = request.data['email']
 
             # Validate email format
             try:
@@ -137,7 +136,7 @@ class CreateUserView(APIView):
                 return JsonResponse({'error': 'Invalid email format'}, status=400)
 
             # Create user using create_user method of the manager
-            UserMail.objects.create_user(email=email, username=email, first_name=first_name, password=password)
+            UserMail.objects.create_user(email=email, username=email, first_name='', password=password)
             return JsonResponse({'message': 'User created successfully'}, status=201)
 
         except ValidationError as ve:
@@ -160,7 +159,11 @@ class AuthenticationUserView(APIView):
             user = get_object_or_404(UserMail, email=email)
             if check_password(password, user.password):
                 login(request, user)
-                return JsonResponse({'message': 'User authenticated successfully'}, status=200)
+                response = {
+                    'user': user.email,
+                    'message': 'User authenticated successfully'
+                }
+                return JsonResponse(response, status=200)
             else:
                 return JsonResponse({'error': 'Incorrect password or email'}, status=400)
         except UserMail.DoesNotExist:
