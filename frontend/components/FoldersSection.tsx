@@ -6,12 +6,17 @@ import { FaInbox } from 'react-icons/fa'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import useModal from '@/hooks/useModalStore'
+import { useUser } from '@/hooks/useUser'
 
 export default function FoldersSection(): ReactElement {
   const pathname = usePathname()
   const onOpen = useModal((state) => state.onOpen)
+  const { user } = useUser()
   
   const onClick = () => {
+    if (!user) {
+      return onOpen('signIn')
+    }
     onOpen('sendMail')
   }
   return (

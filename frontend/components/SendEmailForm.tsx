@@ -1,9 +1,10 @@
 'use client'
 
-import useModal from '@/hooks/useModalStore'
-import { sendEmail } from '@/services/sendEmail'
 import { useState } from 'react'
 import { toast } from 'sonner'
+
+import { useUser } from '@/hooks/useUser'
+import { sendEmail } from '@/services/sendEmail'
 
 interface SendEmailFormProps {
   className?: string
@@ -11,7 +12,12 @@ interface SendEmailFormProps {
 
 const SendEmailForm = ({ className }: SendEmailFormProps) => {
   const [isLoading, setIsLoading] = useState(false)
-  const onClose = useModal((state) => state.onClose)
+  const { user } = useUser()
+
+  if (!user) {
+    toast.error('You need to be logged in to send an email')
+    return
+  }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -20,13 +26,12 @@ const SendEmailForm = ({ className }: SendEmailFormProps) => {
       const form = event.currentTarget
       const formData = new FormData(form)
 
-      const [error, _] = await sendEmail(formData)
+      const [error, _] = await sendEmail(formData, user.email)
 
       if (error) throw error
 
       toast.success('Correo enviado correctamente')
       form.reset()
-      onClose()
     } catch (error) {
       if (error instanceof Error) return toast.error(error.message)
       return toast.error('Something went wrong')
@@ -51,7 +56,6 @@ const SendEmailForm = ({ className }: SendEmailFormProps) => {
           type="text"
           name="receiver"
           id="receiver"
-          className="h-12 border-b w-full outline-none text-sm"
           placeholder="pepito@example.com"
         />
       </div>

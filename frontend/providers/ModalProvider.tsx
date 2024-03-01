@@ -1,8 +1,10 @@
 'use client'
 
+import { useEffect, useState } from 'react'
+
 import SendMailModal from '@/components/modals/SendMailModal'
 import SignInModal from '@/components/modals/SignInModal'
-import { useEffect, useState } from 'react'
+import SignUpModal from '@/components/modals/SignUpModal'
 
 const ModalProvider = () => {
   const [isMounted, setIsMounted] = useState(false)
@@ -17,6 +19,7 @@ const ModalProvider = () => {
     <>
       <SignInModal />
       <SendMailModal />
+      <SignUpModal />
     </>
   )
 }

@@ -9,12 +9,12 @@ import { useUser } from '@/hooks/useUser'
 
 import Modal from './Modal'
 
-const SignInModal = () => {
+const SignUpModal = () => {
   const router = useRouter()
   const { user } = useUser()
   const { isOpen, onClose, type } = useModal((state) => state)
 
-  const isModalOpen = isOpen && type === 'signIn'
+  const isModalOpen = isOpen && type === 'signUp'
 
   useEffect(() => {
     if (user) {
@@ -29,14 +29,14 @@ const SignInModal = () => {
 
   return (
     <Modal
-      title="Welcome back"
-      description="Login to your account"
+      title="Register now!"
+      description="Create an account to start send emails to friends and family."
       isOpen={isModalOpen}
       onChange={onChange}
     >
-      <AuthForm isLogin />
+      <AuthForm />
     </Modal>
   )
 }
 
-export default SignInModal
+export default SignUpModal

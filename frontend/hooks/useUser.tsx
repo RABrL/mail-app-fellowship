@@ -1,5 +1,5 @@
 import { User } from '@/types'
-import { createContext, useContext, useEffect } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 
 type UserContextType = {
   user: User | null
@@ -12,18 +12,18 @@ interface Props {
 }
 
 export const MyUserContextProvider = (props: Props) => {
+  const [user, setUser] = useState<User | null>(null)
 
   useEffect(() => {
-    
-  },[])
-
-  const value = {
-    user: {
-      id: 1,
-      name: 'John Doe',
-      email: 'sdad'
+    const user = localStorage.getItem('user')
+    if (user) {
+      setUser(JSON.parse(user))
     }
-  }
+    setUser(null)
+  }, [user])
+
+  const value = { user }
+
   return <UserContext.Provider value={value} {...props} />
 }
 

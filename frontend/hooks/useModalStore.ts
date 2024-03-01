@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-export type ModalType = 'signIn' | 'sendMail' 
+export type ModalType = 'signIn' | 'sendMail' | 'signUp'
 interface ModalStore {
   type: ModalType | null
   isOpen: boolean

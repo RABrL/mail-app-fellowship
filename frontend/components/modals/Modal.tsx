@@ -63,6 +63,7 @@ const Modal = ({
         </Dialog.Title>
         <Dialog.Description
           className="
+            text-balance
             mb-5
             text-sm
             leading-normal

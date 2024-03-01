@@ -1,4 +1,4 @@
-export async function sendEmail(formData: FormData) {
+export async function sendEmail(formData: FormData, sender_email: string) {
   const receiver = formData.get('receiver')?.toString()
   const content = formData.get('content')?.toString()
   const subject = formData.get('subject')?.toString()
@@ -19,7 +19,7 @@ export async function sendEmail(formData: FormData) {
     body: JSON.stringify({
       subject,
       content,
-      sender_email: 'mendo6472@gmail.com',
+      sender_email,
       receiver_email: receiver
     })
   })
