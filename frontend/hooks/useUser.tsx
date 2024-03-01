@@ -15,13 +15,14 @@ export const MyUserContextProvider = (props: Props) => {
 	const [user, setUser] = useState<User | null>(null);
 
 	useEffect(() => {
-		const user = localStorage.getItem("user");
-		if (user) {
-			setUser(JSON.parse(user));
-      return
+		const data = localStorage["user"];
+		if (data) {
+			setUser(JSON.parse(data));
+			return;
 		}
 		setUser(null);
-	}, [user, localStorage]);
+	}, [localStorage["user"]]);
+
 	const value = { user };
 
 	return <UserContext.Provider value={value} {...props} />;
