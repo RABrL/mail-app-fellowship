@@ -10,6 +10,7 @@ export const getEmailsByUser = async (userEmail: string) => {
     console.error()
   }
 }
+//getting the inbox emails
 export const getEmailsSent = async (userEmail: string) => {
   try {
     return await axios.get(
@@ -19,6 +20,7 @@ export const getEmailsSent = async (userEmail: string) => {
     console.error(error)
   }
 }
+//getting the sent emails from the api
 export const getAnEmail = async (
   mailId: number
 ): Promise<Email | undefined> => {
@@ -32,3 +34,4 @@ export const getAnEmail = async (
     console.error()
   }
 }
+//get an specific emails

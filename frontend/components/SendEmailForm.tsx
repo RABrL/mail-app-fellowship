@@ -18,6 +18,7 @@ const SendEmailForm = ({ className }: SendEmailFormProps) => {
     toast.error('You need to be logged in to send an email')
     return
   }
+  //making sure that user exist
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
