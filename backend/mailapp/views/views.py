@@ -128,7 +128,6 @@ class CreateUserView(APIView):
         try:
             email = request.data['email']
             password = request.data['password']
-            first_name = request.data['email']
 
             # Validate email format
             try:
