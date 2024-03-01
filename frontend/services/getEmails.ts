@@ -4,7 +4,7 @@ import axios from 'axios'
 export const getEmailsByUser = async (userEmail: string) => {
   try {
     return await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/mail/received/mendo6472@gmail.com`
+      `${process.env.NEXT_PUBLIC_API_URL}/mail/received/${userEmail}`
     )
   } catch (error) {
     console.error()
@@ -13,7 +13,7 @@ export const getEmailsByUser = async (userEmail: string) => {
 export const getEmailsSent = async (userEmail: string) => {
   try {
     return await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/mail/sent/mendo6472@gmail.com`
+      `${process.env.NEXT_PUBLIC_API_URL}/mail/sent/${userEmail}`
     )
   } catch (error) {
     console.error(error)
