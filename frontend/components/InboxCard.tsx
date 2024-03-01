@@ -12,9 +12,8 @@ export function InboxCard(props: InboxCardProps) {
   const pathname = usePathname()
   const [ id, setId ] = useState( Number(pathname?.match(/[\d]+/)) )  
   useEffect(() => {
-    console.log(id)
     setId(Number(pathname?.match(/[\d]+/)))
-  },[pathname, id])
+  },[pathname])
   const [cardColor] = useState(
     tailwindColors[Math.floor(Math.random() * tailwindColors.length)]
   )
@@ -28,7 +27,7 @@ export function InboxCard(props: InboxCardProps) {
       >
         <div
           style={{backgroundColor: `${cardColor}`}}
-          className={`flex justify-center items-center rounded-full w-14 h-12`}
+          className='flex justify-center items-center rounded-full w-14 h-12'
         >
           <h2 className=" text-2xl ">{props.sender_email?.slice(0, 1)}</h2>
         </div>
