@@ -8,6 +8,7 @@ import { createUser } from "@/services/createUser";
 import useModal from "@/hooks/useModalStore";
 
 import { InputForm } from "./SendEmailForm";
+import { useRouter } from "next/navigation";
 
 interface AuthFormProps {
 	isLogin?: boolean;
@@ -17,6 +18,7 @@ interface AuthFormProps {
 const AuthForm = ({ isLogin, className }: AuthFormProps) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [isLoginState, setIsLoginState] = useState(isLogin);
+	const router = useRouter();
 
 	const onOpen = useModal((state) => state.onOpen);
 	const onClose = useModal((state) => state.onClose);
@@ -41,6 +43,7 @@ const AuthForm = ({ isLogin, className }: AuthFormProps) => {
 				: toast.success("The user has been created. Now you can login.");
 
 			!isLoginState && onClick();
+      router.refresh();
 			form.reset();
 		} catch (error) {
 			if (error instanceof Error) return toast.error(error.message);
