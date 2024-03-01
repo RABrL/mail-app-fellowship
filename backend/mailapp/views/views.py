@@ -134,21 +134,21 @@ class CreateUserView(APIView):
                 validate_email(email)
             except ValidationError:
                 return JsonResponse({'error': 'Invalid email format'}, status=400)
-            
-            try:
-              user = get_object_or_404(UserMail, email=email)
-              return JsonResponse({'error': 'User with this email already exists'}, status=409)
-            except UserMail.DoesNotExist:
-              user = None
 
+            user = UserMail.objects.filter(email=email).first()
+            
+            if(user):
+                return JsonResponse({'error': 'User already exists'}, status=409)
+            
             # Create user using create_user method of the manager
-            UserMail.objects.create_user(email=email, username=email, first_name='', password=password)
+            user = UserMail.objects.create_user(email=email, username=email, first_name=first_name, password=password)
             return JsonResponse({'message': 'User created successfully'}, status=201)
 
         except ValidationError as ve:
             return JsonResponse({'error': str(ve)}, status=400)
 
         except Exception as e:
+            print(e.__context__)
             return JsonResponse({'error': f'Unexpected error: {str(e)}'}, status=500)
 
 
@@ -165,11 +165,8 @@ class AuthenticationUserView(APIView):
             user = get_object_or_404(UserMail, email=email)
             if check_password(password, user.password):
                 login(request, user)
-                response = {
-                    'user': user.email,
-                    'message': 'User authenticated successfully'
-                }
-                return JsonResponse(response, status=200)
+                res = {'message': 'User authenticated successfully', 'user': user.email}
+                return JsonResponse(res, status=200)
             else:
                 return JsonResponse({'error': 'Incorrect password or email'}, status=400)
         except UserMail.DoesNotExist:

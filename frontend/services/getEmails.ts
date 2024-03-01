@@ -12,7 +12,9 @@ export const getEmailsByUser = async (userEmail: string) => {
 }
 export const getEmailsSent = async (userEmail: string) => {
   try {
-    return await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/mail/sent/mendo6472@gmail.com`)
+    return await axios.get(
+      `${process.env.NEXT_PUBLIC_API_URL}/mail/sent/mendo6472@gmail.com`
+    )
   } catch (error) {
     console.error(error)
   }

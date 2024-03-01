@@ -1,7 +1,7 @@
-import { Toaster } from "sonner";
+import { Toaster } from 'sonner'
 
 const ToasterProvider = () => {
-	return <Toaster richColors position="top-center" />;
-};
+  return <Toaster richColors position="top-center" />
+}
 
-export default ToasterProvider;
+export default ToasterProvider

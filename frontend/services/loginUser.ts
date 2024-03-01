@@ -7,7 +7,7 @@ export const loginUser = async (formData: FormData) => {
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 
   if (!emailRegex.test(email)) return [new Error('Email is not valid'), null]
-  
+
   if (password.length < 6)
     return [new Error('Password must be at least 6 characters long'), null]
 
@@ -36,9 +36,9 @@ export const loginUser = async (formData: FormData) => {
 
   const data = await res.json()
 
-  console.log(data)
+  const user = { email: data.user }
 
-  localStorage.setItem('user', JSON.stringify(data.user))
+  localStorage.setItem('user', JSON.stringify(user))
 
   return [null, data]
 }
