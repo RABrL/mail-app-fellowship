@@ -1,8 +1,10 @@
 'use client'
 
-import { sendEmail } from '@/services/sendEmail'
 import { useState } from 'react'
 import { toast } from 'sonner'
+
+import { useUser } from '@/hooks/useUser'
+import { sendEmail } from '@/services/sendEmail'
 
 interface SendEmailFormProps {
   className?: string
@@ -10,6 +12,12 @@ interface SendEmailFormProps {
 
 const SendEmailForm = ({ className }: SendEmailFormProps) => {
   const [isLoading, setIsLoading] = useState(false)
+  const { user } = useUser()
+
+  if (!user) {
+    toast.error('You need to be logged in to send an email')
+    return
+  }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -18,7 +26,7 @@ const SendEmailForm = ({ className }: SendEmailFormProps) => {
       const form = event.currentTarget
       const formData = new FormData(form)
 
-      const [error, _] = await sendEmail(formData)
+      const [error, _] = await sendEmail(formData, user.email)
 
       if (error) throw error
 
@@ -42,29 +50,28 @@ const SendEmailForm = ({ className }: SendEmailFormProps) => {
           htmlFor="receiver"
           className="p-2 rounded-md border font-semibold mr-2"
         >
-          Para
+          For
         </label>
         <InputForm
           type="text"
           name="receiver"
           id="receiver"
-          className="h-12 border-b w-full outline-none text-sm"
           placeholder="pepito@example.com"
         />
       </div>
-      <InputForm name="subject" placeholder="Agregar un asunto" />
+      <InputForm name="subject" placeholder="Add a subject" />
       <div>
         <textarea
           name="content"
-          className="h-32 border-b w-full outline-none text-sm px-3 py-4"
+          className="h-32 border-b w-full outline-none text-sm px-3 py-4 shadow"
         />
       </div>
       <button
         type="submit"
         disabled={isLoading}
-        className="max-w-28 text-sm rounded-md px-4 h-8 bg-[#0F6CBD] text-white flex items-center justify-between hover:bg-[#0F548C] transition"
+        className="max-w-28 text font-semibold rounded-md px-4 h-10 bg-[#0F6CBD] text-white flex items-center justify-between hover:bg-[#0F548C] transition"
       >
-        {isLoading ? 'Enviando...' : 'Enviar'}
+        {isLoading ? 'Sending...' : 'Send'}
         {!isLoading && (
           <svg
             viewBox="0 0 24 24"
@@ -93,10 +100,10 @@ interface InputFormProps {
   placeholder?: string
 }
 
-const InputForm = ({
+export const InputForm = ({
   type = 'text',
   name,
-  className,
+  className = '',
   id,
   ...props
 }: InputFormProps) => {
@@ -105,9 +112,15 @@ const InputForm = ({
       type={type}
       name={name}
       id={id}
-      className={`${
-        className ?? ''
-      } h-12 border-b w-full outline-none text-sm px-3`}
+      className={`${className} 
+      flex rounded-md 
+      p-3 h-12 border 
+      border-transparent w-full 
+      placeholder:text-neutral-400 
+      disabled:cursor-not-allowed
+      disabled:opacity-50
+      focus:outline-[#0F6CBD]
+      text-sm shadow`}
       {...props}
     />
   )
