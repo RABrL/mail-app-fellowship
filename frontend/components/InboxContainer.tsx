@@ -17,17 +17,9 @@ export function InboxContainer() {
   const { user } = useUser()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const [userEmail, setUserEmail] = useState(null)
-
-  /* if (!user) {
-    return (
-      <section className="bg-principal border-l border-l-gray-500 text-white pt-3 px-3">
-        <p>You need to be logged in to see your emails</p>
-      </section>
-    )
-  } */
 
   useEffect(() => {
+    if(!user) return
     const fetchEmails = async () => {
       try {
         if (pathname === '/') {
@@ -50,7 +42,7 @@ export function InboxContainer() {
       }
     }
     fetchEmails()
-  }, [pathname])
+  }, [pathname,user])
 
   useEffect(() => {
     const searchTerm = searchParams.get('search')?.toLowerCase() || ''
@@ -62,6 +54,14 @@ export function InboxContainer() {
     })
     setFilteredEmails(filtered)
   }, [searchParams, emails])
+
+  if (!user) {
+    return (
+      <section className="bg-principal border-l border-l-gray-500 text-white pt-3 px-3">
+        <p>You need to be logged in to see your emails</p>
+      </section>
+    )
+  }
 
   const emailList = searchParams.get('search') ? filteredEmails : emails
 
