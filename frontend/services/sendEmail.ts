@@ -1,10 +1,3 @@
-interface sendEmailProps {
-  subject: string
-  content: string
-  sender_email: string
-  receiver_email: string
-}
-
 export async function sendEmail(formData: FormData) {
   const receiver = formData.get('receiver')?.toString()
   const content = formData.get('content')?.toString()
@@ -15,7 +8,7 @@ export async function sendEmail(formData: FormData) {
 
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 
-  if (!emailRegex.test(receiver.toString()))
+  if (!emailRegex.test(receiver))
     return [new Error('El correo no es valido'), null]
 
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/mail/`, {
@@ -31,8 +24,12 @@ export async function sendEmail(formData: FormData) {
     })
   })
 
+  if(res.status === 404) {
+    return [new Error(`The recipient's e-mail does not exist`), null]
+  }
+
   if (!res.ok) {
-    return [new Error('Error al enviar el correo'), null]
+    return [new Error('Error sendig mail'), null]
   }
 
   const data = await res.json()

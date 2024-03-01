@@ -1,7 +1,7 @@
-import { Email } from '@/types/EmailInterface'
+import { Email } from '@/types'
 import axios from 'axios'
 
-export const getEmailsByUser = async (userId: string) => {
+export const getEmailsByUser = async (userEmail: string) => {
   try {
     return await axios.get(
       `${process.env.NEXT_PUBLIC_API_URL}/mail/received/mendo6472@gmail.com`
@@ -10,7 +10,7 @@ export const getEmailsByUser = async (userId: string) => {
     console.error()
   }
 }
-export const getEmailsSent = async (userId: string) => {
+export const getEmailsSent = async (userEmail: string) => {
   try {
     return await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/mail/sent/mendo6472@gmail.com`)
   } catch (error) {
