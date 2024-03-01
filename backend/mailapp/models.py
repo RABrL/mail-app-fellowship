@@ -23,7 +23,7 @@ class CustomUserManager(BaseUserManager):
             raise ValueError('The Email is required')
         email = self.normalize_email(email)
         user = self.model(email=email, username=username, first_name=first_name, **extra_fields)
-        user.set_password(password)
+        user.password = make_password(password)
         user.save()
         return user
 

@@ -5,7 +5,7 @@ from django.test import TestCase
 class UserMailTestCase(TestCase):
 
     def test_create_user_model(self):
-        UserMail.objects.create(email="juan1010.jerm@gmail.com", password="somePassword")
+        UserMail.objects.create(username="juan1010", email="juan1010.jerm@gmail.com", password="somePassword")
         self.assertEqual(UserMail.objects.first().email, 'juan1010.jerm@gmail.com')
 
     def test_create_unique_user(self):
@@ -13,7 +13,8 @@ class UserMailTestCase(TestCase):
         Test that the user email is unique
         """
         try:
-            UserMail.objects.create(email="juan1010.jerm@gmail.com", password="somePassword")
+            UserMail.objects.create_user(username="juan1010", email="juan1010.jerm@gmail.com", first_name="juan",
+                                         password="somePassword")
         except Exception as e:
             self.assertEqual(str(e), 'UNIQUE constraint failed: mailapp_usermail.email')
 
@@ -23,8 +24,10 @@ class EmailTestCase(TestCase):
         """
         Create two users
         """
-        self.first_user = UserMail.objects.create(email="juan1010.jerm@gmail.com", password="somePassword")
-        self.second_user = UserMail.objects.create(email="camiloPaez@gmail.com", password="otherPassword")
+        self.first_user = UserMail.objects.create_user(email="juan1010.jerm@gmail.com", username="juan1010",
+                                                      first_name="juan", password="somePassword")
+        self.second_user = UserMail.objects.create_user(email="camilo2020@gmail.com", username="camilo2020",
+                                                        first_name="camilo", password="somePassword1")
 
     def test_create_email(self):
         Email.objects.create(sender_email=self.first_user, recipient_email=self.second_user, subject="COMUNICADO",
@@ -55,8 +58,10 @@ class FolderTestCase(TestCase):
         """
         Create two users
         """
-        self.first_user = UserMail.objects.create(email="juan1010.jerm@gmail.com", password="somePassword")
-        self.second_user = UserMail.objects.create(email="camiloPaez@gmail.com", password="otherPassword")
+        self.first_user = UserMail.objects.create(username="juan2001", email="juan1010.jerm@gmail.com",
+                                                  password="somePassword")
+        self.second_user = UserMail.objects.create(username="camilo2001", email="camiloPaez@gmail.com",
+                                                   password="otherPassword")
         Email.objects.create(sender_email=self.first_user, recipient_email=self.second_user, subject="COMUNICADO",
                              message="Hola reciba un cordial saludo del sacerdote de la iglesia ******")
 
