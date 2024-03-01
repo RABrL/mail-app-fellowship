@@ -19,6 +19,7 @@ export function NavBar(): ReactElement {
   const onClick = () => {
     if (user) {
       localStorage.removeItem('user')
+      router.refresh()
       return
     }
     onOpen('signIn')

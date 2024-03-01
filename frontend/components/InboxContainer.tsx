@@ -17,27 +17,28 @@ export function InboxContainer() {
   const { user } = useUser()
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const [userEmail, setUserEmail] = useState(null)
 
-  if (!user) {
+  /* if (!user) {
     return (
       <section className="bg-principal border-l border-l-gray-500 text-white pt-3 px-3">
         <p>You need to be logged in to see your emails</p>
       </section>
     )
-  }
+  } */
 
   useEffect(() => {
     const fetchEmails = async () => {
       try {
         if (pathname === '/') {
           setIsLoading(true)
-          const res = await getEmailsByUser(user.email)
+          const res = await getEmailsByUser(user?.email)
           const emails = res?.data
           if (!emails || emails.length === 0) return
           setEmails(emails)
         } else if (pathname === '/sent') {
           setIsLoading(true)
-          const res = await getEmailsSent(user.email)
+          const res = await getEmailsSent(user?.email)
           const emails = res?.data
           if (!emails || emails.length === 0) return
           setEmails(emails)

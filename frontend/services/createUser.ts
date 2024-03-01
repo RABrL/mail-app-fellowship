@@ -25,7 +25,7 @@ export const createUser = async (formData: FormData) => {
   })
 
   if (res.status === 409)
-  return [new Error('This email account already exists'), null]
+    return [new Error('This email account already exists'), null]
 
   if (!res.ok) {
     return [new Error('Error creating user'), null]

@@ -24,7 +24,7 @@ export async function sendEmail(formData: FormData, sender_email: string) {
     })
   })
 
-  if(res.status === 404) {
+  if (res.status === 404) {
     return [new Error(`The recipient's e-mail does not exist`), null]
   }
 

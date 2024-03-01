@@ -12,7 +12,7 @@ export default function FoldersSection(): ReactElement {
   const pathname = usePathname()
   const onOpen = useModal((state) => state.onOpen)
   const { user } = useUser()
-  
+
   const onClick = () => {
     if (!user) {
       return onOpen('signIn')
