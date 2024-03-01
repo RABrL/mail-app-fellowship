@@ -5,11 +5,8 @@ import {IoReload} from "react-icons/io5"
 import { useRouter } from "next/navigation"
 import { usePathname } from "next/navigation"
 import { useDebounce } from "use-debounce"
-export interface NavBarProps {
-  
-}
 
-export function NavBar(props: NavBarProps): ReactElement {
+export function NavBar(): ReactElement {
   const [searchValue, setSearchValue] = useState('')
   const [query] = useDebounce(searchValue, 750)
   const router = useRouter()
@@ -28,7 +25,7 @@ export function NavBar(props: NavBarProps): ReactElement {
         <IoIosSearch  className="text-lg  mt-1.5 text-gray-400"/>
         <input value={searchValue} onChange={(e) => setSearchValue(e.target.value)} type="search" placeholder="Search" className="w-full outline-none bg-transparent pl-2"/>
       </div>
-      <button>
+      <button type="button">
         <IoReload className="text-xl  hover:text-rose-400 transition-all duration-75 text-button"/>
       </button>
     </nav>
