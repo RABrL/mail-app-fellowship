@@ -4,6 +4,7 @@ import axios from 'axios'
 export const getEmailsByUser = async (userEmail: string) => {
   return await fetch(`${process.env.NEXT_PUBLIC_API_URL}/mail/received/${userEmail}`).then((res) => { return res.json() })
 }
+//getting the inbox emails
 export const getEmailsSent = async (userEmail: string) => {
   try {
     return await axios.get(
@@ -13,6 +14,7 @@ export const getEmailsSent = async (userEmail: string) => {
     console.error(error)
   }
 }
+//getting the sent emails from the api
 export const getAnEmail = async (
   mailId: number
 ) => {
@@ -20,3 +22,4 @@ export const getAnEmail = async (
       `${process.env.NEXT_PUBLIC_API_URL}/mail/information/${mailId}`
     ).then((res) => { return res.json() })
 }
+//get an specific emails

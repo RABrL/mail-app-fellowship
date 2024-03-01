@@ -26,6 +26,7 @@ export default function EmailPage({
 
   const cardColor =
     tailwindColors[Math.floor(Math.random() * tailwindColors.length)]
+  //Generates a random color for the avatar
   return (
      <section className="py-8 text-text font-semibold px-16 bg-slate-50 w-2/3 overflow-y-auto">
        {loading ? <Spiner /> : (

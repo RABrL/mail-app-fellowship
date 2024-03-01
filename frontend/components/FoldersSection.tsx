@@ -19,6 +19,7 @@ export default function FoldersSection(): ReactElement {
     }
     onOpen('sendMail')
   }
+  //validate if the user already signIn to not be able send an Email
   return (
     <section className="flex flex-col px-10 py-10 bg-principal min-w-60">
       <button

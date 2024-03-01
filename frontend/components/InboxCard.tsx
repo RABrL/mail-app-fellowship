@@ -12,11 +12,12 @@ export function InboxCard(props: InboxCardProps) {
   const [id, setId] = useState(Number(pathname?.match(/[\d]+/)))
   useEffect(() => {
     setId(Number(pathname?.match(/[\d]+/)))
+    //check for digits on the pathname, will be the choosed email by user
   }, [pathname])
   const [cardColor] = useState(
     tailwindColors[Math.floor(Math.random() * tailwindColors.length)]
   )
-
+  //generates a random color for the avatar
   return (
     <Link href={`/${props.id}`}>
       <article

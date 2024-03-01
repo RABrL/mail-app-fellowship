@@ -13,13 +13,14 @@ import { InboxCard } from './InboxCard'
 export function InboxContainer() {
   const [emails, setEmails] = useState<Email[]>([])
   const [filteredEmails, setFilteredEmails] = useState<Email[]>([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const { user } = useUser()
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
   useEffect(() => {
-    if (!user) return
+    if(!user) return
+    // check if user exist with the custom hook useUser
     const fetchEmails = async () => {
       try {
         if (pathname === '/') {
@@ -42,7 +43,13 @@ export function InboxContainer() {
       }
     }
     fetchEmails()
+<<<<<<< HEAD
   }, [pathname, user])
+=======
+    //fetching emails depending if the pathname is inbox or sent
+    //checking if the pathname changes
+  }, [pathname,user])
+>>>>>>> c14141a (adding documentation, actions)
 
   useEffect(() => {
     const searchTerm = searchParams.get('search')?.toLowerCase() || ''
@@ -53,6 +60,7 @@ export function InboxContainer() {
       )
     })
     setFilteredEmails(filtered)
+    //filtering the emails by the searchParam
   }, [searchParams, emails])
 
   if (!user) {
