@@ -94,7 +94,7 @@ DATABASES = {
         "NAME": 'mail_db',
         "USER": 'postgres',
         "PASSWORD": os.environ.get('DB_PASSWORD'),
-        "HOST": 'mailapp-database-instance.c1woi26qsnpj.us-east-1.rds.amazonaws.com',
+        "HOST": os.environ.get('DB_HOST'),
         "PORT": '5432',
     }
 }
