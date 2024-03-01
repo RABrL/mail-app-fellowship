@@ -134,12 +134,6 @@ class CreateUserView(APIView):
                 validate_email(email)
             except ValidationError:
                 return JsonResponse({'error': 'Invalid email format'}, status=400)
-            
-            try:
-              user = get_object_or_404(UserMail, email=email)
-              return JsonResponse({'error': 'User with this email already exists'}, status=409)
-            except UserMail.DoesNotExist:
-              user = None
 
             # Create user using create_user method of the manager
             UserMail.objects.create_user(email=email, username=email, first_name='', password=password)
