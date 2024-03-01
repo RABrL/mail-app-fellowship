@@ -2,18 +2,17 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-import { Email } from '@/types/EmailInterface'
+import { Email } from '@/types'
 import { tailwindColors } from '@/utils/randomColors'
 
-export interface InboxCardProps extends Email {
-}
+export interface InboxCardProps extends Email {}
 export function InboxCard(props: InboxCardProps) {
   // busca el parametro de la ruta de la url
   const pathname = usePathname()
-  const [ id, setId ] = useState( Number(pathname?.match(/[\d]+/)) )  
+  const [id, setId] = useState(Number(pathname?.match(/[\d]+/)))
   useEffect(() => {
     setId(Number(pathname?.match(/[\d]+/)))
-  },[pathname])
+  }, [pathname])
   const [cardColor] = useState(
     tailwindColors[Math.floor(Math.random() * tailwindColors.length)]
   )
@@ -26,8 +25,8 @@ export function InboxCard(props: InboxCardProps) {
         } bg-secondary cursor-pointer border-b border-b-gray-500  flex text-slate-50  px-8 py-8 items-center `}
       >
         <div
-          style={{backgroundColor: `${cardColor}`}}
-          className='flex justify-center items-center rounded-full w-14 h-12'
+          style={{ backgroundColor: `${cardColor}` }}
+          className="flex justify-center items-center rounded-full w-14 h-12"
         >
           <h2 className=" text-2xl ">{props.sender_email?.slice(0, 1)}</h2>
         </div>
