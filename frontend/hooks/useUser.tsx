@@ -1,37 +1,37 @@
-import { User } from '@/types'
-import { createContext, useContext, useEffect, useState } from 'react'
+import { User } from "@/types";
+import { createContext, useContext, useEffect, useState } from "react";
 
 type UserContextType = {
-  user: User | null
-}
+	user: User | null;
+};
 
-const UserContext = createContext<UserContextType | undefined>(undefined)
+const UserContext = createContext<UserContextType | undefined>(undefined);
 
 interface Props {
-  [propName: string]: any
+	[propName: string]: any;
 }
 
 export const MyUserContextProvider = (props: Props) => {
-  const [user, setUser] = useState<User | null>(null)
+	const [user, setUser] = useState<User | null>(null);
 
-  useEffect(() => {
-    const user = localStorage.getItem('user')
-    if (user) {
-      setUser(JSON.parse(user))
-    }
-    setUser(null)
-  }, [user])
+	useEffect(() => {
+		const user = localStorage.getItem("user");
+		if (user) {
+			setUser(JSON.parse(user));
+      return
+		}
+		setUser(null);
+	}, [user, localStorage]);
+	const value = { user };
 
-  const value = { user }
-
-  return <UserContext.Provider value={value} {...props} />
-}
+	return <UserContext.Provider value={value} {...props} />;
+};
 
 export const useUser = () => {
-  const context = useContext(UserContext)
-  if (context === undefined) {
-    throw new Error('useUser must be used within a MyUserContextProvider')
-  }
+	const context = useContext(UserContext);
+	if (context === undefined) {
+		throw new Error("useUser must be used within a MyUserContextProvider");
+	}
 
-  return context
-}
+	return context;
+};

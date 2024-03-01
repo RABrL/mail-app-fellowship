@@ -36,8 +36,6 @@ export const loginUser = async (formData: FormData) => {
 
   const data = await res.json()
 
-  console.log(data)
-
   localStorage.setItem('user', JSON.stringify(data.user))
 
   return [null, data]
