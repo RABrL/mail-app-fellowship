@@ -6,11 +6,15 @@ import { tailwindColors } from '@/utils/randomColors'
 import { getAnEmail } from '@/services/getEmails'
 import { Email } from '@/types'
 import { Spiner } from '@/components/Spiner'
+import { useUser } from '@/hooks/useUser'
 
 export default function EmailPage({ params }: { params: { emailId: number } }) {
   const [loading, setLoading] = useState(true)
   const [email, setEmail] = useState<Email>()
+  const { user } = useUser()
+
   useEffect(() => {
+    if (!user) return
     const fetchEmail = async () => {
       try {
         const res = await getAnEmail(params.emailId)
@@ -21,7 +25,7 @@ export default function EmailPage({ params }: { params: { emailId: number } }) {
       }
     }
     fetchEmail()
-  }, [params.emailId])
+  }, [params.emailId, user])
 
   // if (!email) return <h1>404</h1>
 
