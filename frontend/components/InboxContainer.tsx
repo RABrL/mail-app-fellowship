@@ -43,13 +43,7 @@ export function InboxContainer() {
       }
     }
     fetchEmails()
-<<<<<<< HEAD
   }, [pathname, user])
-=======
-    //fetching emails depending if the pathname is inbox or sent
-    //checking if the pathname changes
-  }, [pathname,user])
->>>>>>> c14141a (adding documentation, actions)
 
   useEffect(() => {
     const searchTerm = searchParams.get('search')?.toLowerCase() || ''
