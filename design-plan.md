@@ -20,7 +20,7 @@ As a team we have decided that we will first apply the necessary user stories an
 
 ### Backend
 
-![Image 1](https://files.slack.com/files-tmb/T06FFQBGQGP-F06MGCGKNER-e63d5c9e55/untitled__5__720.png)
+![Image 1](https://vertechfellowship.slack.com/files/U06HP4TQXN2/F06MGCGKNER/untitled__5_.png)
 
 ### Frontend
 
