@@ -24,7 +24,7 @@ As a team we have decided that we will first apply the necessary user stories an
 
 ### Frontend
 
-![Image 2](https://dribbble.com/shots/4072962/attachments/4072962-Flamebox-email-app-Daily-UI-Challenge-7-365?mode=media)
+![Image 2](https://cdn.dribbble.com/users/648289/screenshots/4072962/oo.png)
 
 ## Roadmap
 
