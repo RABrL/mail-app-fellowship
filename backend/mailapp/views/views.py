@@ -128,7 +128,7 @@ class CreateUserView(APIView):
         try:
             email = request.data['email']
             password = request.data['password']
-
+            first_name = request.data['email']
             # Validate email format
             try:
                 validate_email(email)
@@ -137,7 +137,7 @@ class CreateUserView(APIView):
 
             user = UserMail.objects.filter(email=email).first()
             
-            if(user):
+            if user:
                 return JsonResponse({'error': 'User already exists'}, status=409)
             
             # Create user using create_user method of the manager
