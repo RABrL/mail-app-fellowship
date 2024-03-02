@@ -16,15 +16,15 @@ As a team we have decided that we will first apply the necessary user stories an
 - Implementing advanced social media integration.
 - Providing real-time chat functionality
     
-##The design
+## The design
 
 ### Backend
 
-<img src='https://files.slack.com/files-tmb/T06FFQBGQGP-F06MGCGKNER-e63d5c9e55/untitled__5__720.png'>
+![Image 1](https://files.slack.com/files-tmb/T06FFQBGQGP-F06MGCGKNER-e63d5c9e55/untitled__5__720.png)
 
 ### Frontend
 
-<img src='https://dribbble.com/shots/4072962/attachments/4072962-Flamebox-email-app-Daily-UI-Challenge-7-365?mode=media'>
+![Image 2](https://dribbble.com/shots/4072962/attachments/4072962-Flamebox-email-app-Daily-UI-Challenge-7-365?mode=media)
 
 ## Roadmap
 
