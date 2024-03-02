@@ -15,7 +15,7 @@ export const createUser = async (formData: FormData) => {
 
   if (password !== confirmPassword)
     return [new Error('Passwords do not match'), null]
-//checking the inputs from the signUp form
+  //checking the inputs from the signUp form
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/mail/user/`, {
     method: 'POST',
     headers: {

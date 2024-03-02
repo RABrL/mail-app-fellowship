@@ -10,7 +10,7 @@ export const loginUser = async (formData: FormData) => {
 
   if (password.length < 6)
     return [new Error('Password must be at least 6 characters long'), null]
-//checking the inputs from the login form
+  //checking the inputs from the login form
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/mail/user/authentication/`,
     {
@@ -39,6 +39,6 @@ export const loginUser = async (formData: FormData) => {
   const user = { email: data.user }
 
   localStorage.setItem('user', JSON.stringify(user))
-//authenticating a user and handling erors, if success saving the username on localStorage
+  //authenticating a user and handling erors, if success saving the username on localStorage
   return [null, data]
 }

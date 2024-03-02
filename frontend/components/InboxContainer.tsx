@@ -15,13 +15,13 @@ export function InboxContainer() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   useEffect(() => {
-    if(!user) return
+    if (!user) return
     // check if user exist with the custom hook useUser
     const fetchEmails = async () => {
       try {
         if (pathname === '/') {
           setIsLoading(true)
-            const res = await getEmailsByUser(user?.email)
+          const res = await getEmailsByUser(user?.email)
           const emails = res
           if (!emails || emails.length === 0) return
           setEmails(emails)
@@ -39,7 +39,6 @@ export function InboxContainer() {
     }
     fetchEmails()
   }, [pathname, user])
-
 
   useEffect(() => {
     const searchTerm = searchParams.get('search')?.toLowerCase() || ''

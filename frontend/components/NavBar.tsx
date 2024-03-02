@@ -11,7 +11,7 @@ import { useUser } from '@/hooks/useUser'
 export function NavBar(): ReactElement {
   const [searchValue, setSearchValue] = useState('')
   const [query] = useDebounce(searchValue, 500)
-  //to do not push the value directly debouncing by 500 ms 
+  //to do not push the value directly debouncing by 500 ms
   const router = useRouter()
   const pathname = usePathname()
   const onOpen = useModal((state) => state.onOpen)
