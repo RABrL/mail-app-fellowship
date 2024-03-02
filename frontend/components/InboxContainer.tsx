@@ -1,31 +1,28 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useSearchParams, usePathname } from 'next/navigation'
-
 import { getEmailsByUser } from '@/services/getEmails'
 import { getEmailsSent } from '@/services/getEmails'
 import { useUser } from '@/hooks/useUser'
 import { Email } from '@/types'
-
 import { Spiner } from './Spiner'
 import { InboxCard } from './InboxCard'
-
 export function InboxContainer() {
   const [emails, setEmails] = useState<Email[]>([])
   const [filteredEmails, setFilteredEmails] = useState<Email[]>([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const { user } = useUser()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-
   useEffect(() => {
-    if (!user) return
+    if(!user) return
+    // check if user exist with the custom hook useUser
     const fetchEmails = async () => {
       try {
         if (pathname === '/') {
           setIsLoading(true)
-          const res = await getEmailsByUser(user?.email)
-          const emails = res?.data
+            const res = await getEmailsByUser(user?.email)
+          const emails = res
           if (!emails || emails.length === 0) return
           setEmails(emails)
         } else if (pathname === '/sent') {
@@ -35,7 +32,6 @@ export function InboxContainer() {
           if (!emails || emails.length === 0) return
           setEmails(emails)
         }
-
         setIsLoading(false)
       } catch (error) {
         console.error(error)
@@ -43,7 +39,6 @@ export function InboxContainer() {
     }
     fetchEmails()
   }, [pathname, user])
-
   useEffect(() => {
     const searchTerm = searchParams.get('search')?.toLowerCase() || ''
     const filtered = emails.filter((email) => {
@@ -53,8 +48,8 @@ export function InboxContainer() {
       )
     })
     setFilteredEmails(filtered)
+    //filtering the emails by the searchParam
   }, [searchParams, emails])
-
   if (!user) {
     return (
       <section className="bg-principal border-l border-l-gray-500 text-white flex items-center justify-center min-w-96">
@@ -62,9 +57,7 @@ export function InboxContainer() {
       </section>
     )
   }
-
   const emailList = searchParams.get('search') ? filteredEmails : emails
-
   return (
     <section className="w-1/4 min-w-96 bg-principal border-l border-l-gray-500  overflow-y-auto">
       {isLoading ? (
