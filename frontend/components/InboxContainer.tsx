@@ -24,8 +24,8 @@ export function InboxContainer() {
       try {
         if (pathname === '/') {
           setIsLoading(true)
-          const res = await getEmailsByUser(user?.email)
-          const emails = res?.data
+            const res = await getEmailsByUser(user?.email)
+          const emails = res
           if (!emails || emails.length === 0) return
           setEmails(emails)
         } else if (pathname === '/sent') {
