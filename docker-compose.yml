@@ -1,14 +1,13 @@
-version: '3.9'
+version: '3.8'
 services:
   django:
-    build:
-      context: ./backend
+    build: ./backend
     volumes:
       - ./backend:/app
     ports:
       - 8000:8000
     env_file:
-      - ./backend/.env
+      - .env
     environment:
       DB_PASSWORD: ${DB_PASSWORD}
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
@@ -22,6 +21,6 @@ services:
     ports:
       - "3000:3000"
     env_file:
-      - ./frontend/.env.local
+      - .env
     environment:
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
