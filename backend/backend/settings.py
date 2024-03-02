@@ -31,11 +31,14 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
-CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOW_ORIGIN_WHITELIST = [
-  'http://localhost:3000',
-]
+ALLOWED_HOSTS = ['http://localhost:3000', 'localhost', ]
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_WHITELIST = (
+       'http://localhost:3000',
+)
+CORS_ALLOW_CREDENTIALS = True
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -58,6 +61,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    "django.middleware.common.CommonMiddleware",
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
 ]
@@ -131,7 +135,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/

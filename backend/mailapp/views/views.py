@@ -137,11 +137,11 @@ class CreateUserView(APIView):
 
             user = UserMail.objects.filter(email=email).first()
             
-            if(user):
+            if user:
                 return JsonResponse({'error': 'User already exists'}, status=409)
             
             # Create user using create_user method of the manager
-            user = UserMail.objects.create_user(email=email, username=email, first_name=first_name, password=password)
+            user = UserMail.objects.create_user(email=email, username=email, first_name='', password=password)
             return JsonResponse({'message': 'User created successfully'}, status=201)
 
         except ValidationError as ve:

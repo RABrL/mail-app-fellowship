@@ -10,7 +10,7 @@ export async function sendEmail(formData: FormData, sender_email: string) {
 
   if (!emailRegex.test(receiver))
     return [new Error('El correo no es valido'), null]
-
+  //checking the inputs from sendEmail Form
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/mail/`, {
     method: 'POST',
     headers: {
@@ -33,6 +33,6 @@ export async function sendEmail(formData: FormData, sender_email: string) {
   }
 
   const data = await res.json()
-
+  //sending the email and handling errors
   return [null, data]
 }

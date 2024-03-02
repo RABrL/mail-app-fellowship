@@ -12,17 +12,18 @@ export function InboxCard(props: InboxCardProps) {
   const [id, setId] = useState(Number(pathname?.match(/[\d]+/)))
   useEffect(() => {
     setId(Number(pathname?.match(/[\d]+/)))
+    //check for digits on the pathname, will be the choosed email by user
   }, [pathname])
   const [cardColor] = useState(
     tailwindColors[Math.floor(Math.random() * tailwindColors.length)]
   )
-
+  //generates a random color for the avatar
   return (
     <Link href={`/${props.id}`}>
       <article
         className={`${
           id === props.id && 'bg-opacity-95 border-l-4 border-l-button'
-        } bg-secondary cursor-pointer border-b border-b-gray-500  flex text-slate-50  px-8 py-8 items-center `}
+        } bg-secondary cursor-pointer border-b border-b-gray-500  flex text-slate-50  p-8 lg:p-5 items-center `}
       >
         <div
           style={{ backgroundColor: `${cardColor}` }}

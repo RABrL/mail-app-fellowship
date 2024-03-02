@@ -1,3 +1,4 @@
+
 "use client";
 import { tailwindColors } from "@/utils/randomColors";
 import { getAnEmail } from "@/services/getEmails";

@@ -10,7 +10,8 @@ import { useUser } from '@/hooks/useUser'
 
 export function NavBar(): ReactElement {
   const [searchValue, setSearchValue] = useState('')
-  const [query] = useDebounce(searchValue, 300)
+  const [query] = useDebounce(searchValue, 500)
+  //to do not push the value directly debouncing by 500 ms 
   const router = useRouter()
   const pathname = usePathname()
   const onOpen = useModal((state) => state.onOpen)
@@ -23,6 +24,7 @@ export function NavBar(): ReactElement {
       return
     }
     onOpen('signIn')
+    //to logout or signIn depending on the user
   }
 
   useEffect(() => {
@@ -31,6 +33,7 @@ export function NavBar(): ReactElement {
     } else {
       router.push(`${pathname}?search=${query}`)
     }
+    //checking the input search pushing to the searchParam
   }, [query, pathname, router])
 
   return (

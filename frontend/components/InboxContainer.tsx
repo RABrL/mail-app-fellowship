@@ -39,6 +39,8 @@ export function InboxContainer() {
     }
     fetchEmails()
   }, [pathname, user])
+
+
   useEffect(() => {
     const searchTerm = searchParams.get('search')?.toLowerCase() || ''
     const filtered = emails.filter((email) => {

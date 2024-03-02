@@ -89,3 +89,4 @@ export function Spiner(): ReactElement {
     </div>
   )
 }
+//spiner for de loading state
