@@ -28,10 +28,7 @@ MIGRATION_MODULES = {
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0','54.147.145.119']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0','54.147.145.119', '*']
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_ORIGIN_WHITELIST = [
   'http://localhost:3000',

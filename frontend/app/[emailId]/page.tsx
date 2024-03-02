@@ -14,7 +14,7 @@ export default function EmailPage({ params }: { params: { emailId: number } }) {
   const { user } = useUser()
 
   useEffect(() => {
-    if (!user) return
+    if (!user) return setEmail(undefined)
     const fetchEmail = async () => {
       try {
         const res = await getAnEmail(params.emailId)
