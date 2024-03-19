@@ -1,11 +1,9 @@
-import { Email } from '@/types'
-import axios from 'axios'
+import { Email } from "@/types"
+import apiClient from "./api-client"
 
 export const getEmailsByUser = async (userEmail: string) => {
   try {
-    return await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/mail/received/${userEmail}`
-    )
+    return await apiClient.get(`/mail/received/${userEmail}`)
   } catch (error) {
     console.error()
   }
@@ -13,9 +11,7 @@ export const getEmailsByUser = async (userEmail: string) => {
 
 export const getEmailsSent = async (userEmail: string) => {
   try {
-    return await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/mail/sent/${userEmail}`
-    )
+    return await apiClient.get(`/mail/sent/${userEmail}`)
   } catch (error) {
     console.error(error)
   }
@@ -25,11 +21,10 @@ export const getAnEmail = async (
   mailId: number
 ): Promise<Email | undefined> => {
   try {
-    const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/mail/information/${mailId}`
-    )
+    const res = await apiClient.get(`/mail/information/${mailId}`)
     if (!res.data) return undefined
-    return res.data
+    const data = await res.data
+    return data
   } catch (error) {
     console.error()
   }
