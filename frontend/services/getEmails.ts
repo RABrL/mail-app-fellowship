@@ -1,4 +1,4 @@
-import { Email } from "@/types";
+import { Email } from "@/types/email";
 import apiClient from "./api-client";
 
 export const getEmailsByUser = async (userEmail: string) => {
