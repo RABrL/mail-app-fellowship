@@ -8,10 +8,10 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   
-  build:
+  backend_testing:
     
     runs-on: ubuntu-latest
-    # Add in environment variables for the entire "build" job
+    # Add in environment variables for the entire  job
     env:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -36,7 +36,7 @@ jobs:
     # If we want to test multiple python version(s)
     strategy:
       matrix:
-        python-version: ["3.8"] # ["3.8", "3.9", "3.10"]
+        python-version: ["3.8"] # ["3.8", "3.9", "3.10"] TODO: add the version used in prod
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
