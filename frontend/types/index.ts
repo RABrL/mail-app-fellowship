@@ -10,3 +10,15 @@ export interface Email {
 export interface User {
   email: string
 }
+
+export interface SendEmailFormProps {
+  className?: string
+}
+
+export interface InputFormProps {
+  type?: string
+  name: string
+  className?: string
+  id?: string
+  placeholder?: string
+}

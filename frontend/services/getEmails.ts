@@ -10,6 +10,7 @@ export const getEmailsByUser = async (userEmail: string) => {
     console.error()
   }
 }
+
 export const getEmailsSent = async (userEmail: string) => {
   try {
     return await axios.get(
@@ -19,6 +20,7 @@ export const getEmailsSent = async (userEmail: string) => {
     console.error(error)
   }
 }
+
 export const getAnEmail = async (
   mailId: number
 ): Promise<Email | undefined> => {
