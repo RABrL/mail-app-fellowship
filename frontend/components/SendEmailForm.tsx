@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { toast } from 'sonner'
+import { useState } from "react"
+import { toast } from "sonner"
 
 import { useUser } from '@/hooks/useUser'
 import { sendEmail } from '@/services/sendEmail'
@@ -12,7 +12,7 @@ const SendEmailForm = ({ className }: SendEmailFormProps) => {
   const { user } = useUser()
 
   if (!user) {
-    toast.error('You need to be logged in to send an email')
+    toast.error("You need to be logged in to send an email")
     return
   }
 
@@ -27,11 +27,11 @@ const SendEmailForm = ({ className }: SendEmailFormProps) => {
 
       if (error) throw error
 
-      toast.success('Correo enviado correctamente')
+      toast.success("Correo enviado correctamente")
       form.reset()
     } catch (error) {
       if (error instanceof Error) return toast.error(error.message)
-      return toast.error('Something went wrong')
+      return toast.error("Something went wrong")
     } finally {
       setIsLoading(false)
     }
@@ -40,7 +40,7 @@ const SendEmailForm = ({ className }: SendEmailFormProps) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className={`${className ?? ''} flex flex-col w-full gap-2`}
+      className={`${className ?? ""} flex flex-col w-full gap-2`}
     >
       <div className="flex items-center">
         <label
@@ -68,7 +68,7 @@ const SendEmailForm = ({ className }: SendEmailFormProps) => {
         disabled={isLoading}
         className="max-w-28 text font-semibold rounded-md px-4 h-10 bg-[#0F6CBD] text-white flex items-center justify-between hover:bg-[#0F548C] transition"
       >
-        {isLoading ? 'Sending...' : 'Send'}
+        {isLoading ? "Sending..." : "Send"}
         {!isLoading && (
           <svg
             viewBox="0 0 24 24"
@@ -90,9 +90,9 @@ const SendEmailForm = ({ className }: SendEmailFormProps) => {
 }
 
 export const InputForm = ({
-  type = 'text',
+  type = "text",
   name,
-  className = '',
+  className = "",
   id,
   ...props
 }: InputFormProps) => {
