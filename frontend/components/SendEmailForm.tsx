@@ -1,49 +1,46 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { toast } from 'sonner'
+import { useState } from "react";
+import { toast } from "sonner";
 
-import { useUser } from '@/hooks/useUser'
-import { sendEmail } from '@/services/sendEmail'
-
-interface SendEmailFormProps {
-  className?: string
-}
+import { useUser } from "@/hooks/useUser";
+import { sendEmail } from "@/services/sendEmail";
+import { SendEmailFormProps } from "@/types/email";
 
 const SendEmailForm = ({ className }: SendEmailFormProps) => {
-  const [isLoading, setIsLoading] = useState(false)
-  const { user } = useUser()
+  const [isLoading, setIsLoading] = useState(false);
+  const { user } = useUser();
 
   if (!user) {
-    toast.error('You need to be logged in to send an email')
-    return
+    toast.error("You need to be logged in to send an email");
+    return;
   }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setIsLoading(true)
+    event.preventDefault();
+    setIsLoading(true);
     try {
-      const form = event.currentTarget
-      const formData = new FormData(form)
+      const form = event.currentTarget;
+      const formData = new FormData(form);
 
-      const [error, _] = await sendEmail(formData, user.email)
+      const [error, _] = await sendEmail(formData, user.email);
 
-      if (error) throw error
+      if (error) throw error;
 
-      toast.success('Correo enviado correctamente')
-      form.reset()
+      toast.success("Correo enviado correctamente");
+      form.reset();
     } catch (error) {
-      if (error instanceof Error) return toast.error(error.message)
-      return toast.error('Something went wrong')
+      if (error instanceof Error) return toast.error(error.message);
+      return toast.error("Something went wrong");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className={`${className ?? ''} flex flex-col w-full gap-2`}
+      className={`${className ?? ""} flex flex-col w-full gap-2`}
     >
       <div className="flex items-center">
         <label
@@ -71,7 +68,7 @@ const SendEmailForm = ({ className }: SendEmailFormProps) => {
         disabled={isLoading}
         className="max-w-28 text font-semibold rounded-md px-4 h-10 bg-[#0F6CBD] text-white flex items-center justify-between hover:bg-[#0F548C] transition"
       >
-        {isLoading ? 'Sending...' : 'Send'}
+        {isLoading ? "Sending..." : "Send"}
         {!isLoading && (
           <svg
             viewBox="0 0 24 24"
@@ -89,21 +86,21 @@ const SendEmailForm = ({ className }: SendEmailFormProps) => {
         )}
       </button>
     </form>
-  )
-}
+  );
+};
 
 interface InputFormProps {
-  type?: string
-  name: string
-  className?: string
-  id?: string
-  placeholder?: string
+  type?: string;
+  name: string;
+  className?: string;
+  id?: string;
+  placeholder?: string;
 }
 
 export const InputForm = ({
-  type = 'text',
+  type = "text",
   name,
-  className = '',
+  className = "",
   id,
   ...props
 }: InputFormProps) => {
@@ -123,7 +120,7 @@ export const InputForm = ({
       text-sm shadow`}
       {...props}
     />
-  )
-}
+  );
+};
 
-export default SendEmailForm
+export default SendEmailForm;
