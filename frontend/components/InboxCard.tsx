@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-import { Email } from '@/types'
+import { Email } from '@/types/email'
 import { tailwindColors } from '@/utils/randomColors'
 
 export interface InboxCardProps extends Email {}

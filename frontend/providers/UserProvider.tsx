@@ -1,10 +1,7 @@
 'use client'
 
 import { MyUserContextProvider } from '@/hooks/useUser'
-
-interface UserProviderProps {
-  children: React.ReactNode
-}
+import { UserProviderProps } from '@/types/user'
 
 const UserProvider = ({ children }: UserProviderProps) => {
   return <MyUserContextProvider>{children}</MyUserContextProvider>

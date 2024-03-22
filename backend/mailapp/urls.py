@@ -2,7 +2,7 @@ from django.urls import path
 from .views.views import *
 
 urlpatterns = [
-    path('received/<str:user_mail>/', MailsListView.as_view(), name='mails_list'),
+    path('received/<str:user_mail>', MailsListView.as_view(), name='mails_list'),
     path('sent/<str:user_mail>', MailsSentView.as_view(), name='mails_sent'),
     path('information/<str:mail_id>', MailInfoView.as_view(), name='mail_info'),
     path('', SendMailView.as_view(), name='send_mail'),
