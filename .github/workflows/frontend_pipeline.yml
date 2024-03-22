@@ -1,0 +1,22 @@
+on:
+  #trigger
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+
+  jest_test:
+
+    runs-on: ubuntu-latest
+
+    steps: 
+      - uses: actions/checkout@v3
+
+      - name: Run tests
+
+        run: |
+          npm install
+          npm test
+      
