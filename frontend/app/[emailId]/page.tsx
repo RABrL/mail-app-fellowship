@@ -1,36 +1,36 @@
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react'
 
-import { tailwindColors } from "@/utils/randomColors";
-import { getAnEmail } from "@/services/getEmails";
-import { Email } from "@/types/email";
-import { Spiner } from "@/components/Spiner";
-import { useUser } from "@/hooks/useUser";
+import { tailwindColors } from '@/utils/randomColors'
+import { getAnEmail } from '@/services/getEmails'
+import { Email } from '@/types/email'
+import { Spiner } from '@/components/Spiner'
+import { useUser } from '@/hooks/useUser'
 
 export default function EmailPage({ params }: { params: { emailId: number } }) {
-  const [loading, setLoading] = useState(true);
-  const [email, setEmail] = useState<Email>();
-  const { user } = useUser();
+  const [loading, setLoading] = useState(true)
+  const [email, setEmail] = useState<Email>()
+  const { user } = useUser()
 
   useEffect(() => {
-    if (!user) return setEmail(undefined);
+    if (!user) return setEmail(undefined)
     const fetchEmail = async () => {
       try {
-        const res = await getAnEmail(params.emailId);
-        setEmail(res);
-        setLoading(false);
+        const res = await getAnEmail(params.emailId)
+        setEmail(res)
+        setLoading(false)
       } catch (error) {
-        console.error(error);
+        console.error(error)
       }
-    };
-    fetchEmail();
-  }, [params.emailId, user]);
+    }
+    fetchEmail()
+  }, [params.emailId, user])
 
   // if (!email) return <h1>404</h1>
 
   const cardColor =
-    tailwindColors[Math.floor(Math.random() * tailwindColors.length)];
+    tailwindColors[Math.floor(Math.random() * tailwindColors.length)]
   //Generates a random color for the avatar
   return (
     <section className="py-8 text-text font-semibold px-16 bg-slate-50 w-2/3 overflow-y-auto">
@@ -47,7 +47,7 @@ export default function EmailPage({ params }: { params: { emailId: number } }) {
               </h2>
             </div>
             <p className="text-center py-4 px-6">
-              {email?.sender_email.split("@")[0]}
+              {email?.sender_email.split('@')[0]}
             </p>
           </div>
           <article className="mt-16">
@@ -57,5 +57,5 @@ export default function EmailPage({ params }: { params: { emailId: number } }) {
         </>
       )}
     </section>
-  );
+  )
 }

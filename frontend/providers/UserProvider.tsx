@@ -1,10 +1,10 @@
-"use client";
+'use client'
 
-import { MyUserContextProvider } from "@/hooks/useUser";
-import { UserProviderProps } from "@/types/user";
+import { MyUserContextProvider } from '@/hooks/useUser'
+import { UserProviderProps } from '@/types/user'
 
 const UserProvider = ({ children }: UserProviderProps) => {
-  return <MyUserContextProvider>{children}</MyUserContextProvider>;
-};
+  return <MyUserContextProvider>{children}</MyUserContextProvider>
+}
 
-export default UserProvider;
+export default UserProvider

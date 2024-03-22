@@ -1,4 +1,4 @@
-import { CiMail } from "react-icons/ci";
+import { CiMail } from 'react-icons/ci'
 
 export default function Home() {
   return (
@@ -6,5 +6,5 @@ export default function Home() {
       <h3 className="text-2xl text-principal">No Email selected</h3>
       <CiMail className="text-9xl text-principal" />
     </div>
-  );
+  )
 }

@@ -1,4 +1,4 @@
 export interface AuthFormProps {
-  isLogin?: boolean;
-  className?: string;
+  isLogin?: boolean
+  className?: string
 }

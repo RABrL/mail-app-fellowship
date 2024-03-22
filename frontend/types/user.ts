@@ -1,15 +1,15 @@
 export type UserContextType = {
-  user: User | null;
-};
+  user: User | null
+}
 
 export interface User {
-  email: string;
+  email: string
 }
 
 export interface UserProviderProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 export interface userProps {
-  [propName: string]: unknown;
+  [propName: string]: unknown
 }

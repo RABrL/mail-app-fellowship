@@ -1,27 +1,27 @@
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
-import { Email } from "@/types/email";
-import { tailwindColors } from "@/utils/randomColors";
+import { Email } from '@/types/email'
+import { tailwindColors } from '@/utils/randomColors'
 
 export interface InboxCardProps extends Email {}
 export function InboxCard(props: InboxCardProps) {
   // busca el parametro de la ruta de la url
-  const pathname = usePathname();
-  const [id, setId] = useState(Number(pathname?.match(/[\d]+/)));
+  const pathname = usePathname()
+  const [id, setId] = useState(Number(pathname?.match(/[\d]+/)))
   useEffect(() => {
-    setId(Number(pathname?.match(/[\d]+/)));
-  }, [pathname]);
+    setId(Number(pathname?.match(/[\d]+/)))
+  }, [pathname])
   const [cardColor] = useState(
     tailwindColors[Math.floor(Math.random() * tailwindColors.length)]
-  );
+  )
 
   return (
     <Link href={`/${props.id}`}>
       <article
         className={`${
-          id === props.id && "bg-opacity-95 border-l-4 border-l-button"
+          id === props.id && 'bg-opacity-95 border-l-4 border-l-button'
         } bg-secondary cursor-pointer border-b border-b-gray-500  flex text-slate-50  px-8 py-8 items-center `}
       >
         <div
@@ -45,5 +45,5 @@ export function InboxCard(props: InboxCardProps) {
         </div>
       </article>
     </Link>
-  );
+  )
 }

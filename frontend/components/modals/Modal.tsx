@@ -1,13 +1,13 @@
-import { ModalProps } from "@/types/modal";
-import * as Dialog from "@radix-ui/react-dialog";
-import { IoMdClose } from "react-icons/io";
+import { ModalProps } from '@/types/modal'
+import * as Dialog from '@radix-ui/react-dialog'
+import { IoMdClose } from 'react-icons/io'
 
 const Modal = ({
   children,
   description,
   isOpen,
   onChange,
-  title,
+  title
 }: ModalProps) => {
   return (
     <Dialog.Root open={isOpen} defaultOpen={isOpen} onOpenChange={onChange}>
@@ -89,7 +89,7 @@ const Modal = ({
         </Dialog.Close>
       </Dialog.Content>
     </Dialog.Root>
-  );
-};
+  )
+}
 
-export default Modal;
+export default Modal

@@ -1,11 +1,11 @@
-import { Email } from "@/types"
-import apiClient from "./api-client"
+import { Email } from '@/types'
+import apiClient from './api-client'
 
 export const getEmailsByUser = async (userEmail: string) => {
   try {
     return await apiClient.get(`/mail/received/${userEmail}`)
   } catch (error) {
-    console.error();
+    console.error()
   }
 }
 
@@ -13,7 +13,7 @@ export const getEmailsSent = async (userEmail: string) => {
   try {
     return await apiClient.get(`/mail/sent/${userEmail}`)
   } catch (error) {
-    console.error(error);
+    console.error(error)
   }
 }
 
@@ -26,6 +26,6 @@ export const getAnEmail = async (
     const data = await res.data
     return data
   } catch (error) {
-    console.error();
+    console.error()
   }
-};
+}
