@@ -1,0 +1,9 @@
+# config
+.idea/
+
+# envs
+myenv/
+venv/
+
+# secrets
+.env

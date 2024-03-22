@@ -11,5 +11,5 @@ export interface UserProviderProps {
 }
 
 export interface userProps {
-  [propName: string]: any;
+  [propName: string]: unknown;
 }

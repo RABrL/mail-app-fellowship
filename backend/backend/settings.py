@@ -27,12 +27,16 @@ MIGRATION_MODULES = {
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+DEV_ALLOWED_HOST = os.environ.get('DEV_ALLOWED_HOST')
+PROD_ALLOWED_HOST = os.environ.get('PROD_ALLOWED_HOST')
+DEV_ALLOWED_ORIGIN = os.environ.get('DEV_ALLOWED_ORIGIN')
+PROD_ALLOWED_ORIGIN = os.environ.get('PROD_ALLOWED_ORIGIN')
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0','54.147.145.119', '*']
+ALLOWED_HOSTS = ['127.0.0.1', '0.0.0.0', DEV_ALLOWED_HOST, PROD_ALLOWED_HOST, '*']
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_ORIGIN_WHITELIST = [
-  'http://localhost:3000',
-  'http://54.147.145.119:8000'
+  DEV_ALLOWED_ORIGIN,
+  PROD_ALLOWED_ORIGIN
 ]
 # Application definition
 

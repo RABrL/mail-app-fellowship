@@ -1,19 +1,19 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { toast } from "sonner";
+import { useState } from "react"
+import { toast } from "sonner"
 
-import { useUser } from "@/hooks/useUser";
-import { sendEmail } from "@/services/sendEmail";
-import { SendEmailFormProps } from "@/types/email";
+import { useUser } from '@/hooks/useUser'
+import { sendEmail } from '@/services/sendEmail'
+import { SendEmailFormProps, InputFormProps } from '@/types'
 
 const SendEmailForm = ({ className }: SendEmailFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useUser();
 
   if (!user) {
-    toast.error("You need to be logged in to send an email");
-    return;
+    toast.error("You need to be logged in to send an email")
+    return
   }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -27,11 +27,11 @@ const SendEmailForm = ({ className }: SendEmailFormProps) => {
 
       if (error) throw error;
 
-      toast.success("Correo enviado correctamente");
-      form.reset();
+      toast.success("Correo enviado correctamente")
+      form.reset()
     } catch (error) {
-      if (error instanceof Error) return toast.error(error.message);
-      return toast.error("Something went wrong");
+      if (error instanceof Error) return toast.error(error.message)
+      return toast.error("Something went wrong")
     } finally {
       setIsLoading(false);
     }
@@ -88,14 +88,6 @@ const SendEmailForm = ({ className }: SendEmailFormProps) => {
     </form>
   );
 };
-
-interface InputFormProps {
-  type?: string;
-  name: string;
-  className?: string;
-  id?: string;
-  placeholder?: string;
-}
 
 export const InputForm = ({
   type = "text",
