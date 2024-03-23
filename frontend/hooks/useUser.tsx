@@ -1,4 +1,5 @@
 import { User, UserContextType, userProps } from '@/types/user'
+import { getCookie } from '@/utils/cookies'
 import { createContext, useContext, useEffect, useState } from 'react'
 
 const UserContext = createContext<UserContextType | undefined>(undefined)
@@ -9,11 +10,11 @@ export const MyUserContextProvider = (props: userProps) => {
   let data: string | null = null
 
   if (typeof window !== 'undefined') {
-    data = localStorage.getItem('user')
+    data = getCookie('user')
   }
 
   useEffect(() => {
-    data = localStorage.getItem('user')
+    data = getCookie('user');
     if (data) {
       setUser(JSON.parse(data))
       return

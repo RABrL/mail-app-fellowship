@@ -183,5 +183,11 @@ BodyParams:
 
 - [ ] Hacer pipeline para el testeo (Frontend and backend). [Marlon]
 - [ ] Testing and fixing some bugs. [David]
-- [ ] Manejo de sesión. [Ángel]
+- [x] Manejo de sesión. [Ángel]
+
+  **Implementation Details:**
+  
+  Change user session from localstorage to cookies.
+  
+  The user session management has been updated, transitioning from localStorage to cookies for security reasons. Cookies offer built-in security features such as HttpOnly and Secure, which help prevent attacks like XSS and CSRF. Additionally, since they are managed by the browser, attackers find it more challenging to access information compared to localStorage. Three functions have been created in /utils to handle cookies, replacing the previous usage of localStorage throughout. Furthermore, cookies now have an expiration time, adding an extra layer of protection to user data. This data storage practice is recommended for security purposes, leveraging secure cookie handling and expiration for additional protection.
 - [x] Organizar, refactorizar. [Carlos]

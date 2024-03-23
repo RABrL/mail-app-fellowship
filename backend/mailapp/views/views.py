@@ -1,5 +1,7 @@
+import threading
 from django.contrib.auth.hashers import make_password, check_password
 from django.shortcuts import get_object_or_404
+from mailapp.utils.smtp import send_email
 from rest_framework.views import APIView
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
@@ -142,6 +144,11 @@ class CreateUserView(APIView):
             
             # Create user using create_user method of the manager
             user = UserMail.objects.create_user(email=email, username=email, first_name=first_name, password=password)
+            try:
+                send_email_tread = threading.Thread(target=send_email, args=('Welcome to MailApp', 'You have just registered on FELLOWSHIP\'S EMAIL APP', [email]))
+                send_email_tread.start()
+            except Exception as e:
+                print(e)
             return JsonResponse({'message': 'User created successfully'}, status=201)
 
         except ValidationError as ve:

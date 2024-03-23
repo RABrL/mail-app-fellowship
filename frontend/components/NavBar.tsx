@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation'
 import { useDebounce } from 'use-debounce'
 import useModal from '@/hooks/useModalStore'
 import { useUser } from '@/hooks/useUser'
+import { removeCookie } from '@/utils/cookies'
 
 export function NavBar(): ReactElement {
   const [searchValue, setSearchValue] = useState('')
@@ -18,7 +19,7 @@ export function NavBar(): ReactElement {
 
   const onClick = () => {
     if (user) {
-      localStorage.removeItem('user')
+      removeCookie('user')
       router.refresh()
       return
     }
