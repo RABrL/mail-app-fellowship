@@ -1,5 +1,6 @@
 import { validEmail } from '@/utils/emailCheck'
 import apiClient from './api-client'
+import { setCookie } from '@/utils/cookies'
 
 export const loginUser = async (formData: FormData) => {
   const email = formData.get('email')?.toString()
@@ -32,8 +33,7 @@ export const loginUser = async (formData: FormData) => {
   const data = await res.data
 
   const user = { email: data.user }
-
-  localStorage.setItem('user', JSON.stringify(user))
+  setCookie('user', JSON.stringify(user), 7);
 
   return [null, data]
 }
