@@ -1,0 +1,17 @@
+# Terraform
+*.tfstate
+*.tfstate.backup
+*.tfplan
+*.tfvars
+*.auto.tfvars
+.terraform/
+terraform.*
+crash.log
+
+# IDE/Editor
+.vscode/
+.idea/
+
+# Logs and Temporary Files
+*.log
+*.tmp
