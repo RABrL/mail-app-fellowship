@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 
 import { tailwindColors } from '@/utils/randomColors'
 import { getAnEmail } from '@/services/getEmails'
-import { Email } from '@/types'
+import { Email } from '@/types/email'
 import { Spiner } from '@/components/Spiner'
 import { useUser } from '@/hooks/useUser'
 

@@ -1,17 +1,9 @@
-import { User } from '@/types'
+import { User, UserContextType, userProps } from '@/types/user'
 import { createContext, useContext, useEffect, useState } from 'react'
-
-type UserContextType = {
-  user: User | null
-}
 
 const UserContext = createContext<UserContextType | undefined>(undefined)
 
-interface Props {
-  [propName: string]: any
-}
-
-export const MyUserContextProvider = (props: Props) => {
+export const MyUserContextProvider = (props: userProps) => {
   const [user, setUser] = useState<User | null>(null)
 
   let data: string | null = null

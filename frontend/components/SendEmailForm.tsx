@@ -5,10 +5,7 @@ import { toast } from 'sonner'
 
 import { useUser } from '@/hooks/useUser'
 import { sendEmail } from '@/services/sendEmail'
-
-interface SendEmailFormProps {
-  className?: string
-}
+import { SendEmailFormProps, InputFormProps } from '@/types'
 
 const SendEmailForm = ({ className }: SendEmailFormProps) => {
   const [isLoading, setIsLoading] = useState(false)
@@ -90,14 +87,6 @@ const SendEmailForm = ({ className }: SendEmailFormProps) => {
       </button>
     </form>
   )
-}
-
-interface InputFormProps {
-  type?: string
-  name: string
-  className?: string
-  id?: string
-  placeholder?: string
 }
 
 export const InputForm = ({

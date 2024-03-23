@@ -1,26 +1,21 @@
+import { validEmail } from '@/utils/emailCheck'
+import apiClient from './api-client'
+
 export const loginUser = async (formData: FormData) => {
   const email = formData.get('email')?.toString()
   const password = formData.get('password')?.toString()
 
   if (!email || !password) return [new Error('All fields are required'), null]
 
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-
-  if (!emailRegex.test(email)) return [new Error('Email is not valid'), null]
+  if (!validEmail(email)) return [new Error('Email is not valid'), null]
 
   if (password.length < 6)
     return [new Error('Password must be at least 6 characters long'), null]
 
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/mail/user/authentication/`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ email, password })
-    }
-  )
+  const res = await apiClient.post('/mail/user/authentication/', {
+    email,
+    password
+  })
 
   if (res.status === 400) {
     return [new Error('The email or password are incorrect'), null]
@@ -30,11 +25,11 @@ export const loginUser = async (formData: FormData) => {
     return [new Error('The email does not exist'), null]
   }
 
-  if (!res.ok) {
+  if (res.status !== 200) {
     return [new Error('Something went wrong'), null]
   }
 
-  const data = await res.json()
+  const data = await res.data
 
   const user = { email: data.user }
 

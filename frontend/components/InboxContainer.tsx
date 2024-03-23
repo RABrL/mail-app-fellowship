@@ -5,7 +5,7 @@ import { useSearchParams, usePathname } from 'next/navigation'
 import { getEmailsByUser } from '@/services/getEmails'
 import { getEmailsSent } from '@/services/getEmails'
 import { useUser } from '@/hooks/useUser'
-import { Email } from '@/types'
+import { Email } from '@/types/email'
 
 import { Spiner } from './Spiner'
 import { InboxCard } from './InboxCard'

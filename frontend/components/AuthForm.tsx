@@ -9,11 +9,7 @@ import useModal from '@/hooks/useModalStore'
 
 import { InputForm } from './SendEmailForm'
 import { useRouter } from 'next/navigation'
-
-interface AuthFormProps {
-  isLogin?: boolean
-  className?: string
-}
+import { AuthFormProps } from '@/types/authform'
 
 const AuthForm = ({ isLogin, className }: AuthFormProps) => {
   const [isLoading, setIsLoading] = useState(false)

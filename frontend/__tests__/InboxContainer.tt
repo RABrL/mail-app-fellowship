@@ -1,0 +1,195 @@
+import React from 'react';
+import { render, waitFor } from '@testing-library/react';
+import { MyUserContextProvider } from '@/hooks/useUser';
+import { NavBar } from '@/components/NavBar';
+
+import { InboxContainer } from '@/components/InboxContainer';
+import { getEmailsByUser as mockGetEmailsByUser } from '@/services/getEmails'; 
+
+// Mock the getEmailsByUser function
+jest.mock('@/services/getEmails');
+
+// Mock the useRouter hook
+jest.mock("next/navigation", () => ({
+  useRouter() {
+    return {
+      prefetch: () => null,
+      push: () => null,
+    };
+  },
+  usePathname() {
+    return '';
+  },
+  useSearchParams() {
+    return {
+      get: () => null,
+    }
+  },
+}));
+
+// Sample email data for testingz
+const sampleEmails = [
+  { id: 1, sender_email: 'test1@example.com', date: '2022-02-15T12:00:00', subject: 'Test Subject 1' },
+  { id: 2, sender_email: 'test2@example.com', date: '2022-02-16T12:00:00', subject: 'Test Subject 2' },
+  // Add more sample emails as needed
+];
+
+describe('InboxContainer Component', () => {
+
+  
+  it('Renders the loading state initially', async () => {
+    const { getByText } = render(<MyUserContextProvider>
+      <NavBar />
+      <InboxContainer />
+    </MyUserContextProvider>);
+    expect(getByText('Loading...')).toBeInTheDocument();
+  });
+
+  
+
+  // Add more tests as needed
+});
+
+/*
+
+beforeEach(() => {
+    // Create a mock function for getEmailsByUser
+    // (mockGetEmailsByUser as jest.Mock).mockClear();
+  });
+  
+
+it('Renders emails when data is fetched successfully', async () => {
+    const { getByText } = render(<InboxContainer />);
+    await waitFor(() => expect(mockGetEmailsByUser).toHaveBeenCalledTimes(1));
+    
+    sampleEmails.forEach((email) => {
+      expect(getByText(email.sender_email)).toBeInTheDocument();
+      expect(getByText(email.subject)).toBeInTheDocument();
+      expect(getByText(email.date.slice(0, 10))).toBeInTheDocument();
+    });
+  });
+
+  it('Logs an error if data fetching fails', async () => {
+    (mockGetEmailsByUser as jest.Mock).mockRejectedValueOnce(new Error('Failed to fetch emails'));
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+    render(<InboxContainer />);
+    await waitFor(() => expect(mockGetEmailsByUser as jest.Mock).toHaveBeenCalledTimes(1));
+    
+    expect(consoleErrorSpy).toHaveBeenCalledWith(new Error('Failed to fetch emails'));
+    consoleErrorSpy.mockRestore();
+  });
+
+
+
+
+import React from 'react';
+import { render, waitFor } from '@testing-library/react';
+import { NavBar } from '@/components/NavBar';
+import { MyUserContextProvider } from '@/hooks/useUser';
+import { InboxContainer } from '@/components/InboxContainer';
+
+// Mock the useRouter hook
+jest.mock("next/navigation", () => ({
+  useRouter() {
+    return {
+      prefetch: () => null,
+      push: () => null,
+    };
+  },
+  usePathname() {
+    return '';
+  },
+  useSearchParams() {
+    return {
+      get: () => null,
+    }
+  },
+}));
+
+
+// Mock the getEmailsByUser function
+jest.mock('@/services/getEmails');
+
+// Sample email data for testing
+const sampleEmails = [
+  { id: 1, sender_email: 'test1@example.com', date: '2022-02-15T12:00:00', subject: 'Test Subject 1' },
+  { id: 2, sender_email: 'test2@example.com', date: '2022-02-16T12:00:00', subject: 'Test Subject 2' },
+  // Add more sample emails as needed
+];
+
+describe('InboxContainer Component', () => {
+
+  beforeEach(() => {
+    // Create a mock function for getEmailsByUser
+    (mockGetEmailsByUser as jest.Mock).mockClear();
+    // jest.clearAllMocks();
+  });
+  
+  it('Renders the loading state initially', async () => {
+    const { getByText } = render(
+      <MyUserContextProvider>
+        <NavBar />
+        <InboxContainer />
+      </MyUserContextProvider>
+      );
+    expect(getByText('Loading...')).toBeInTheDocument();
+    await waitFor(() => {});
+  });
+
+  // Add more tests as needed
+});
+
+/*
+
+// Optional check for expected color based on mocked `tailwindColors`
+  // expect(screen.getByRole('article')).toHaveStyle({ backgroundColor: 'red' }); // Example assertion
+  it('clicking on InboxCard navigates to the correct route', () => {
+  
+  const mockEmail: Email = {
+    id: 1,
+    subject: 'Test Email',
+    sender_email: 'sender@example.com',
+    date: '2024-02-29',
+    message: null,
+    receiver_email: 'receiver@example.com'
+  };
+  render(<InboxCard {...mockEmail} />);
+
+  const card = screen.getByRole('article');
+  userEvent.click(card);
+
+  expect(window.location.pathname).toBe(`/${mockEmail.id}`);
+});
+
+
+
+it('Renders emails when data is fetched successfully', async () => {
+    
+    const { getByText } = render(<UserProvider>
+      <NavBar />
+      <InboxContainer />
+    </UserProvider>);
+    await waitFor(() => expect(mockGetEmailsByUser).toHaveBeenCalledTimes(1));
+    
+    sampleEmails.forEach((email) => {
+      expect(getByText(email.sender_email)).toBeInTheDocument();
+      expect(getByText(email.subject)).toBeInTheDocument();
+      expect(getByText(email.date.slice(0, 10))).toBeInTheDocument();
+    });
+  });
+
+  it('Logs an error if data fetching fails', async () => {
+    (mockGetEmailsByUser as jest.Mock).mockRejectedValueOnce(new Error('Failed to fetch emails'));
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+    render(<UserProvider>
+      <NavBar />
+      <InboxContainer />
+    </UserProvider>);
+    await waitFor(() => expect(mockGetEmailsByUser as jest.Mock).toHaveBeenCalledTimes(1));
+    
+    expect(consoleErrorSpy).toHaveBeenCalledWith(new Error('Failed to fetch emails'));
+    consoleErrorSpy.mockRestore();
+  });
+*/
