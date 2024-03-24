@@ -12,6 +12,14 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
       DB_HOST: ${DB_HOST}
+      DEV_ALLOWED_HOST: ${DEV_ALLOWED_HOST}
+      PROD_ALLOWED_HOST: ${PROD_ALLOWED_HOST}
+      DEV_ALLOWED_ORIGIN: ${DEV_ALLOWED_ORIGIN}
+      PROD_ALLOWED_ORIGIN: ${PROD_ALLOWED_ORIGIN}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      SMTP_SERVER: ${SMTP_SERVER}
+      SMTP_PORT: ${SMTP_PORT}
     command: >
       sh -c " python manage.py wait_for_db && python manage.py makemigrations &&   python manage.py migrate &&  python manage.py runserver 0.0.0.0:8000"
   front:
