@@ -7,16 +7,35 @@ on:
 
 jobs:
 
-  jest_test:
+  frontend_testing:
 
     runs-on: ubuntu-latest
-
     steps: 
       - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3 
+        with:          
+          node-version: '18'
 
-      - name: Run tests
+      - name: Install dependencies
 
         run: |
+          cd frontend
           npm install
-          npm test
       
+      - name: Lint code
+
+        run: |
+          cd frontend
+          npm run lint
+
+      - name: Jest tests
+
+        run: |
+          cd frontend
+          npm run test
+
+      - name: Build app
+
+        run: |
+          cd frontend
+          npm run build
