@@ -181,13 +181,28 @@ BodyParams:
 
 **Milestone 2**
 
-- [ ] Hacer pipeline para el testeo (Frontend and backend). [Marlon]
-- [ ] Testing and fixing some bugs. [David]
-- [x] Manejo de sesión. [Ángel]
+- [x] Github actions pipeline for testing in front and back. [Marlon](https://github.com/Marlondot)  ->   [PR #35](https://github.com/RABrL/mail-app-fellowship/pull/35)
 
-  **Implementation Details:**
-  
-  Change user session from localstorage to cookies.
-  
-  The user session management has been updated, transitioning from localStorage to cookies for security reasons. Cookies offer built-in security features such as HttpOnly and Secure, which help prevent attacks like XSS and CSRF. Additionally, since they are managed by the browser, attackers find it more challenging to access information compared to localStorage. Three functions have been created in /utils to handle cookies, replacing the previous usage of localStorage throughout. Furthermore, cookies now have an expiration time, adding an extra layer of protection to user data. This data storage practice is recommended for security purposes, leveraging secure cookie handling and expiration for additional protection.
-- [x] Organizar, refactorizar. [Carlos]
+  - Using the tests created by the HG6 we created a frontend pipeline that tests with jest 
+  - Created a Backend pipeline that runs a temporal container for Postgres to better run the tests made by the legacy team. 
+- [x] Testing and fixing some bugs. [David](https://github.com/imitelis)  ->  [PR#34](https://github.com/RABrL/mail-app-fellowship/pull/34),  [PR#36](https://github.com/RABrL/mail-app-fellowship/pull/36)  and  [PR#38](https://github.com/RABrL/mail-app-fellowship/pull/38)
+      
+    - Fixed CORS bug
+    - Reimplemented and enlarged Jest tests
+    - Configured .gitignore and .env files
+    - Used gunicorn as WSGI production server
+    - Created AWS infraestructure using Terraform
+- [x] Session management. [Angel](https://github.com/AngelBrand1)  ->  [PR#37](https://github.com/RABrL/mail-app-fellowship/pull/37).
+    
+    - Change user session from localstorage to cookies.
+    
+        The user session management has been updated, transitioning from localStorage to cookies for security reasons. Cookies offer built-in security features such as HttpOnly and Secure, which help prevent attacks like XSS and CSRF. Additionally, since they are managed by the browser, attackers find it more challenging to access information compared to localStorage. Three functions have been created in /utils to handle cookies, replacing the previous usage of localStorage throughout. Furthermore, cookies now have an expiration time, adding an extra layer of protection to user data. This data storage practice is recommended for security purposes, leveraging secure cookie handling and expiration for additional protection.
+
+    - New feature
+    
+        Sending real emails using SMTP.
+- [x] Organize, refactor. [Carlos](https://github.com/forgionyc)  ->  [PR #33](https://github.com/RABrL/mail-app-fellowship/pull/33)
+  - Refactored api calls to work with axios.
+  - Added api-client making api calls easier to read.
+  - Added emailCheck to remove clutter from the api calls
+  - Moved all the interfaces code to the types folder, making the source code more organized.
